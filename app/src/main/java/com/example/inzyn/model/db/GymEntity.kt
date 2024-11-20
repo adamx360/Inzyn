@@ -24,7 +24,7 @@ data class GymEntity(
 
     companion object {
         fun Gym.toEntity(): GymEntity {
-            return GymEntity(id, name, date, reps, weigth)
+            return GymEntity(id, name, date, reps, weight)
         }
     }
 

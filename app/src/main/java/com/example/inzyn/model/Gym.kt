@@ -7,7 +7,7 @@ data class Gym(
     val id: Int,
     val name: String,
     val reps: Int,
-    val weigth: Int,
+    val weight: Int,
     val date: Date
 
 
