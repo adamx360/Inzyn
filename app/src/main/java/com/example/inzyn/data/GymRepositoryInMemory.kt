@@ -1,11 +1,13 @@
 package com.example.inzyn.data
 
 import com.example.inzyn.model.Gym
+import java.time.LocalTime
+import java.util.Date
 
 object GymRepositoryInMemory: GymRepository {
 
     private val gymList = mutableListOf<Gym>(
-
+        Gym(1,"Bicep Curl", 0, Date(LocalTime.now().toString()))
     )
 
 
@@ -15,11 +17,13 @@ object GymRepositoryInMemory: GymRepository {
         gymList.add(if(exercise.id == 0) exercise.copy(id = getNextId())else exercise)
     }
 
-    override suspend fun getGymById(id: Int): Gym =
-        gymList.first{it.id == id}
+    override suspend fun getGymById(id: Int): Gym {
+        return gymList.find { it.id == id }
+            ?: throw NoSuchElementException("Note with id $id not found")
+    }
 
     override suspend fun set(exercise: Gym) {
-       val index = gymList.indexOfFirst { it.id == exercise.id }
+        val index = gymList.indexOfFirst { it.id == exercise.id }
         gymList[index] = exercise
     }
 
@@ -30,6 +34,6 @@ object GymRepositoryInMemory: GymRepository {
 
 
     private fun getNextId(): Int {
-        return gymList.maxOf { it.id }.inc()
+        return gymList.maxOfOrNull { it.id }?.inc() ?: 1
     }
 }

@@ -8,7 +8,6 @@ import com.example.inzyn.model.db.GymEntity
 
 @Dao
 interface GymDao {
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun createOrUpdate(gym: GymEntity)
 
@@ -20,10 +19,4 @@ interface GymDao {
 
     @Query("DELETE FROM gym WHERE id = :gymId")
     suspend fun remove(gymId: Long)
-
-
-
-
-
-
 }
