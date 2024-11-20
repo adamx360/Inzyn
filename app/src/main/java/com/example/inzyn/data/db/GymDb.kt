@@ -50,9 +50,9 @@ abstract class GymDb : RoomDatabase() {
 
             suspend fun populateDatabase(gymDao: GymDao) {
                 val entries = listOf(
-                    GymEntity(name = "BenchPress", count = 1, date = Date()),
-                    GymEntity(name = "Squat", count = 2, date = Date()),
-                    GymEntity(name = "Deadlift", count = 3, date = Date())
+                    GymEntity(name = "BenchPress", reps = 1, weight = 0, date = Date()),
+                    GymEntity(name = "Squat", reps = 2, weight = 0, date = Date()),
+                    GymEntity(name = "Deadlift", reps = 3, weight = 0, date = Date())
                 )
                 entries.forEach { gymDao.createOrUpdate(it) }
                 println("Database populated with: $entries") // Debug

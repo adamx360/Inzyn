@@ -6,8 +6,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.inzyn.databinding.ExerciseItemBinding
 import com.example.inzyn.model.Gym
-import com.example.inzyn.model.db.GymEntity
-import java.util.Date
 
 class ExerciseItem(
     private val binding: ExerciseItemBinding
@@ -34,11 +32,7 @@ class GymListAdapter (
     private val onItemClick: (Int) -> Unit,
     private val onItemLongClick: (Int) -> Unit
 ) : RecyclerView.Adapter<ExerciseItem>(){
-    var gymList: List<Gym> = listOf(
-        Gym(name = "BenchPress", count = 1, date = Date(),id = 1),
-        Gym(name = "Squat", count = 2, date = Date(), id = 2),
-        Gym(name = "Deadlift", count = 3, date = Date(), id = 3)
-    )
+    var gymList: List<Gym> = emptyList()
         set(value) {
             val diffs = DiffUtil.calculateDiff(GymDiffCallback(field, value))
             field = value

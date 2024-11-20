@@ -7,7 +7,7 @@ import java.util.Date
 object GymRepositoryInMemory: GymRepository {
 
     private val gymList = mutableListOf<Gym>(
-        Gym(1,"Bicep Curl", 0, Date(LocalTime.now().toString()))
+        Gym(1, "Bicep Curl", 0, 0, Date(LocalTime.now().toString()))
     )
 
 

@@ -2,13 +2,13 @@ package com.example.inzyn.model
 
 import java.util.Date
 
-data class Gym (
+data class Gym(
 
     val id: Int,
     val name: String,
-    val count: Int,
+    val reps: Int,
+    val weigth: Int,
     val date: Date
-
 
 
 )

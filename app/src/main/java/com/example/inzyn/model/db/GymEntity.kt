@@ -8,23 +8,23 @@ import java.util.Date
 
 
 @Entity(tableName = "gym")
-data class GymEntity (
+data class GymEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val name: String,
-    val count: Int,
-    val date: Date
+    val date: Date,
+    val reps: Int,
+    val weight: Int
 
+) {
 
-){
-
-    fun toGym(context: Context) : Gym {
-        return Gym(id,name,count,date)
+    fun toGym(context: Context): Gym {
+        return Gym(id, name, reps, weight, date)
     }
 
-    companion object{
-        fun  Gym.toEntity(): GymEntity{
-            return GymEntity(id,name,count,date)
+    companion object {
+        fun Gym.toEntity(): GymEntity {
+            return GymEntity(id, name, date, reps, weigth)
         }
     }
 
