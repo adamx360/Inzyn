@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_timer"
+    app:startDestination="@id/mainActivity3">
+    <activity
+        android:id="@+id/mainActivity3"
+        android:name="com.example.inzyn.MainActivity"
+        android:label="activity_main"
+        tools:layout="@layout/activity_main" />
+    <fragment
+        android:id="@+id/clockFragment3"
+        android:name="com.example.inzyn.fragments.ClockFragment"
+        android:label="ClockFragment">
+        <action
+            android:id="@+id/action_clockFragment3_to_mainActivity3"
+            app:destination="@id/mainActivity3" />
+    </fragment>
+</navigation>

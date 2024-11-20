@@ -28,10 +28,8 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-        binding.clock.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null)
-                .setAnchorView(R.id.clock).show()
+        binding.clock.setOnClickListener {
+            navController.navigate(R.id.action_clockFragment3_to_mainActivity3)
         }
     }
 
