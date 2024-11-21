@@ -10,15 +10,15 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.inzyn.R
-import com.example.inzyn.adapters.GymListAdapter
+import com.example.inzyn.adapters.ExerciseListAdapter
 import com.example.inzyn.databinding.FragmentListBinding
-import com.example.inzyn.viewmodel.PlanViewModel
-import com.example.inzyn.model.Gym
+import com.example.inzyn.viewmodel.ListViewModel
+import com.example.inzyn.model.Exercise
 
 class ListFragment : Fragment() {
     private lateinit var binding: FragmentListBinding
-    private lateinit var gymListAdapter: GymListAdapter
-    private val viewModel: PlanViewModel by viewModels()
+    private lateinit var exerciseListAdapter: ExerciseListAdapter
+    private val viewModel: ListViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,16 +34,16 @@ class ListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        gymListAdapter = GymListAdapter(
-            onItemClick = { position -> gymListAdapter.gymList[position]
+        exerciseListAdapter = ExerciseListAdapter(
+            onItemClick = { position -> viewModel.onEditExercise(exerciseListAdapter.exerciseList[position].id)
             },
             onItemLongClick = { position ->
-                val selectedExercise: Gym = gymListAdapter.gymList[position]
+                val selectedExercise: Exercise = exerciseListAdapter.exerciseList[position]
                 AlertDialog.Builder(requireContext())
                     .setTitle("Usuń przedmiot")
                     .setMessage("Czy napewno chcesz usunąć ${selectedExercise.name}?")
                     .setPositiveButton("Usuń") { dialog, _ ->
-                        viewModel.onGymRemove(selectedExercise.id)
+                        viewModel.onExerciseRemove(selectedExercise.id)
                         dialog.dismiss()
                     }
                     .setNegativeButton("Anuluj") { dialog, _ ->
@@ -55,16 +55,20 @@ class ListFragment : Fragment() {
 
         binding.exerciseList.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = gymListAdapter
+            adapter = exerciseListAdapter
         }
 
         viewModel.gyms.observe(viewLifecycleOwner) {
             println("Loaded gyms: $it") // Debugowanie danych
-            gymListAdapter.gymList = it
+            exerciseListAdapter.exerciseList = it
         }
 
         binding.buttonFirst.setOnClickListener {
             findNavController().navigate(R.id.action_listFragment_to_calendarFragment)
+        }
+
+        binding.addExercise.setOnClickListener {
+            viewModel.onAddExercise()
         }
 
         viewModel.navigation.observe(viewLifecycleOwner) {

@@ -44,4 +44,10 @@
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
     <string name="go_to_calendar">Go to Calendar</string>
+    <string name="add_exercise">Add exercise</string>
+    <string name="exercise">Exercise</string>
+    <string name="name">Name</string>
+    <string name="exercise_name">Name</string>
+    <string name="add">Add</string>
+    <string name="save">Save</string>
 </resources>

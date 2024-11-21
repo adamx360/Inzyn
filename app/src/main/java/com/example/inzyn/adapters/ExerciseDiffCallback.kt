@@ -1,11 +1,11 @@
 package com.example.inzyn.adapters
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.inzyn.model.Gym
+import com.example.inzyn.model.Exercise
 
-class GymDiffCallback(
-    private val old: List<Gym>,
-    private val new: List<Gym>
+class ExerciseDiffCallback(
+    private val old: List<Exercise>,
+    private val new: List<Exercise>
 ) : DiffUtil.Callback() {
     override fun getOldListSize(): Int = old.size
     override fun getNewListSize(): Int = new.size

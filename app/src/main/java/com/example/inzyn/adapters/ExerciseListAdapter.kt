@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.inzyn.databinding.ExerciseItemBinding
-import com.example.inzyn.model.Gym
+import com.example.inzyn.model.Exercise
 
 class ExerciseItem(
     private val binding: ExerciseItemBinding
@@ -13,7 +13,7 @@ class ExerciseItem(
     var id: Int = 0
         private set
 
-    fun onBind(exerciseItem: Gym, onItemClick: () -> Unit, onItemLongClick: () -> Unit) {
+    fun onBind(exerciseItem: Exercise, onItemClick: () -> Unit, onItemLongClick: () -> Unit) {
         with(binding) {
             id = exerciseItem.id
             name.text = exerciseItem.name
@@ -28,13 +28,13 @@ class ExerciseItem(
     }
 }
 
-class GymListAdapter (
+class ExerciseListAdapter (
     private val onItemClick: (Int) -> Unit,
     private val onItemLongClick: (Int) -> Unit
 ) : RecyclerView.Adapter<ExerciseItem>(){
-    var gymList: List<Gym> = emptyList()
+    var exerciseList: List<Exercise> = emptyList()
         set(value) {
-            val diffs = DiffUtil.calculateDiff(GymDiffCallback(field, value))
+            val diffs = DiffUtil.calculateDiff(ExerciseDiffCallback(field, value))
             field = value
             diffs.dispatchUpdatesTo(this)
         }
@@ -45,11 +45,11 @@ class GymListAdapter (
         return ExerciseItem(binding)
     }
 
-    override fun getItemCount(): Int = gymList.size
+    override fun getItemCount(): Int = exerciseList.size
 
     override fun onBindViewHolder(holder: ExerciseItem, position: Int) {
         holder.onBind(
-            gymList[position],
+            exerciseList[position],
             onItemClick = { onItemClick(position) },
             onItemLongClick = { onItemLongClick(position) })
     }

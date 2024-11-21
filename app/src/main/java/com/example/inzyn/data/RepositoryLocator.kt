@@ -4,10 +4,10 @@ import android.content.Context
 import kotlinx.coroutines.CoroutineScope
 
 object RepositoryLocator {
-    lateinit var gymRepository: GymRepository
+    lateinit var exerciseRepository: ExerciseRepository
         private set
 
     fun init(context: Context, scope: CoroutineScope){
-        gymRepository = GymRepositoryInFile(context, scope)
+        exerciseRepository = ExerciseRepositoryInFile(context, scope)
     }
 }

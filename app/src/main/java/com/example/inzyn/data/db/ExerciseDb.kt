@@ -7,28 +7,27 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.inzyn.data.DateConverter
-import com.example.inzyn.model.db.GymEntity
+import com.example.inzyn.model.db.ExerciseEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.util.Date
 
 @Database(
-    entities = [GymEntity::class],
+    entities = [ExerciseEntity::class],
     version = 1,
 )
 @TypeConverters(DateConverter::class)
-abstract class GymDb : RoomDatabase() {
-    abstract val gym: GymDao
+abstract class ExerciseDb : RoomDatabase() {
+    abstract val exercise: ExerciseDao
 
     companion object {
         @Volatile
-        private var INSTANCE: GymDb? = null
+        private var INSTANCE: ExerciseDb? = null
 
-        fun open(context: Context, scope: CoroutineScope): GymDb {
+        fun open(context: Context, scope: CoroutineScope): ExerciseDb {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    GymDb::class.java,
+                    ExerciseDb::class.java,
                     "gym"
                 ).addCallback(GymDbCallback(scope)).build()
                 INSTANCE = instance
@@ -43,18 +42,18 @@ abstract class GymDb : RoomDatabase() {
                 super.onCreate(db)
                 INSTANCE?.let { database ->
                     scope.launch {
-                        populateDatabase(database.gym)
+                        populateDatabase(database.exercise)
                     }
                 }
             }
 
-            suspend fun populateDatabase(gymDao: GymDao) {
+            suspend fun populateDatabase(exerciseDao: ExerciseDao) {
                 val entries = listOf(
-                    GymEntity(name = "BenchPress", reps = 1, weight = 0, date = Date()),
-                    GymEntity(name = "Squat", reps = 2, weight = 0, date = Date()),
-                    GymEntity(name = "Deadlift", reps = 3, weight = 0, date = Date())
+                    ExerciseEntity(name = "BenchPress", description = "Description for BenchPress"),
+                    ExerciseEntity(name = "Squat", description = "Description for Squat"),
+                    ExerciseEntity(name = "Deadlift", description = "Description for Deadlift")
                 )
-                entries.forEach { gymDao.createOrUpdate(it) }
+                entries.forEach { exerciseDao.createOrUpdate(it) }
                 println("Database populated with: $entries") // Debug
             }
         }
