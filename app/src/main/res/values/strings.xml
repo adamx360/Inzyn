@@ -2,7 +2,7 @@
     <string name="app_name">Inzyn</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="plan_fragment_label">Plan</string>
+    <string name="list_fragment_label">Exercise List</string>
     <string name="calendar_fragment_label">Calendar</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
@@ -43,4 +43,5 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="go_to_calendar">Go to Calendar</string>
 </resources>

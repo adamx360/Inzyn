@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
 
         binding.clock.setOnClickListener {
-            navController.navigate(R.id.action_clockFragment3_to_mainActivity3)
         }
     }
 

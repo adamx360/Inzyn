@@ -3,23 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/planFragment">
+    app:startDestination="@id/listFragment">
     <fragment
-        android:id="@+id/planFragment"
-        android:name="com.example.inzyn.fragments.PlanFragment"
-        android:label="Plan"
-        tools:layout="@layout/fragment_plan">
+        android:id="@+id/listFragment"
+        android:name="com.example.inzyn.fragments.ListFragment"
+        android:label="@string/list_fragment_label">
         <action
-            android:id="@+id/action_planFragment_to_calendarFragment"
+            android:id="@+id/action_listFragment_to_calendarFragment"
             app:destination="@id/calendarFragment" />
     </fragment>
     <fragment
         android:id="@+id/calendarFragment"
         android:name="com.example.inzyn.fragments.CalendarFragment"
-        android:label="Calendar"
+        android:label="@string/calendar_fragment_label"
         tools:layout="@layout/fragment_calendar">
         <action
-            android:id="@+id/action_calendarFragment_to_planFragment"
-            app:destination="@id/planFragment" />
+            android:id="@+id/action_calendarFragment_to_listFragment"
+            app:destination="@id/listFragment" />
     </fragment>
 </navigation>

@@ -34,7 +34,7 @@ class CalendarFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.buttonSecond.setOnClickListener {
-            findNavController().navigate(R.id.action_calendarFragment_to_planFragment)
+            findNavController().navigate(R.id.action_calendarFragment_to_listFragment)
         }
     }
 

@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.inzyn.databinding.IntervalClocksBinding
+import com.example.inzyn.viewmodel.ClockViewModel
 import com.example.inzyn.viewmodel.PlanViewModel
 
 class ClockFragment : Fragment() {
@@ -16,7 +17,7 @@ class ClockFragment : Fragment() {
     val timerTextView = binding.timerDisplay
 
     private lateinit var binding: IntervalClocksBinding
-    private val viewModel: PlanViewModel by viewModels()
+    private val viewModel: ClockViewModel by viewModels()
 
 
     override fun onCreateView(

@@ -11,12 +11,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.inzyn.R
 import com.example.inzyn.adapters.GymListAdapter
-import com.example.inzyn.databinding.FragmentPlanBinding
+import com.example.inzyn.databinding.FragmentListBinding
 import com.example.inzyn.viewmodel.PlanViewModel
 import com.example.inzyn.model.Gym
 
-class PlanFragment : Fragment() {
-    private lateinit var binding: FragmentPlanBinding
+class ListFragment : Fragment() {
+    private lateinit var binding: FragmentListBinding
     private lateinit var gymListAdapter: GymListAdapter
     private val viewModel: PlanViewModel by viewModels()
 
@@ -24,7 +24,7 @@ class PlanFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return FragmentPlanBinding.inflate(inflater, container, false).also {
+        return FragmentListBinding.inflate(inflater, container, false).also {
             binding = it
             binding.viewModel = viewModel
             binding.lifecycleOwner = viewLifecycleOwner
@@ -64,7 +64,7 @@ class PlanFragment : Fragment() {
         }
 
         binding.buttonFirst.setOnClickListener {
-            findNavController().navigate(R.id.action_planFragment_to_calendarFragment)
+            findNavController().navigate(R.id.action_listFragment_to_calendarFragment)
         }
 
         viewModel.navigation.observe(viewLifecycleOwner) {

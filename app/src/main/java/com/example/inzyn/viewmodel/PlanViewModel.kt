@@ -40,7 +40,7 @@ class PlanViewModel : ViewModel() {
     }
 
     fun onDestinationChange(controller: NavController, destination: NavDestination, arguments: Bundle?) {
-        if (destination.id == R.id.planFragment) {
+        if (destination.id == R.id.listFragment) {
             this.loadGyms()
         }
     }

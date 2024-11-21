@@ -12,9 +12,5 @@
     <fragment
         android:id="@+id/clockFragment3"
         android:name="com.example.inzyn.fragments.ClockFragment"
-        android:label="ClockFragment">
-        <action
-            android:id="@+id/action_clockFragment3_to_mainActivity3"
-            app:destination="@id/mainActivity3" />
-    </fragment>
+        android:label="ClockFragment"/>
 </navigation>
