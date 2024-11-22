@@ -2,22 +2,4 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_timer"
-    app:startDestination="@id/listFragment2">
-    <fragment
-        android:id="@+id/listFragment2"
-        android:name="com.example.inzyn.fragments.ListFragment"
-        android:label="ListFragment" >
-        <action
-            android:id="@+id/action_listFragment2_to_clockFragment"
-            app:destination="@id/clockFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/clockFragment"
-        android:name="com.example.inzyn.fragments.ClockFragment"
-        android:label="ClockFragment" >
-        <action
-            android:id="@+id/action_clockFragment_to_listFragment2"
-            app:destination="@id/listFragment2" />
-    </fragment>
-</navigation>
+    android:id="@+id/nav_timer"/>

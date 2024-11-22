@@ -4,7 +4,7 @@ import com.example.inzyn.model.Exercise
 
 object ExerciseRepositoryInMemory: ExerciseRepository {
 
-    private val exerciseLists = mutableListOf<Exercise>(
+    private val exerciseLists = mutableListOf(
         Exercise(1, "Bicep Curl", "Description for Bicep Curl")
     )
 

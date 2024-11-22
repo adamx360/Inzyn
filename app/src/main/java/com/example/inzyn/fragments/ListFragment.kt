@@ -76,7 +76,7 @@ class ListFragment : Fragment() {
         }
 
         binding.floatingClock.setOnClickListener {
-                findNavController().navigate(R.id.action_listFragment2_to_clockFragment)
+                findNavController().navigate(R.id.action_listFragment_to_clockFragment)
         }
     }
 

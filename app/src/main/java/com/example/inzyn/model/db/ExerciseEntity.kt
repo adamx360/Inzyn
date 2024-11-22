@@ -14,7 +14,7 @@ data class ExerciseEntity(
     val description: String?
 ) {
 
-    fun toGym(context: Context): Exercise {
+    fun toExercise(context: Context): Exercise {
         return Exercise(id, name, description)
     }
 

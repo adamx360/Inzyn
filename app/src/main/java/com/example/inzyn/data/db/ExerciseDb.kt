@@ -37,7 +37,7 @@ abstract class ExerciseDb : RoomDatabase() {
 
         private class GymDbCallback(
             private val scope: CoroutineScope
-        ) : RoomDatabase.Callback() {
+        ) : Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
                 INSTANCE?.let { database ->

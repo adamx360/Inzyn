@@ -11,6 +11,7 @@ import androidx.navigation.NavDestination
 import com.example.inzyn.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ClockViewModel : ViewModel() {
     private var countDownTimer: CountDownTimer? = null
@@ -18,13 +19,11 @@ class ClockViewModel : ViewModel() {
     private val isRunning = MutableLiveData<Boolean>()
 
     init {
-        this.loadTimer()
-
-    }
-    fun loadTimer() {
-        viewModelScope.launch(Dispatchers.IO) {
-            isRunning.value = false
-            remainingTime.value = "00:00"
+        viewModelScope.launch {
+            withContext(Dispatchers.Main) {
+                isRunning.value = false
+                remainingTime.value = "00:00"
+            }
         }
     }
 
@@ -48,12 +47,6 @@ class ClockViewModel : ViewModel() {
             }
             countDownTimer?.start()
 
-        }
-    }
-
-    fun onDestinationChange(controller: NavController, destination: NavDestination, arguments: Bundle?){
-        if (destination.id == R.id.clockFragment){
-            this.loadTimer()
         }
     }
 }

@@ -24,7 +24,7 @@ class ListViewModel : ViewModel() {
         this.loadExercises()
     }
 
-    fun loadExercises() {
+    private fun loadExercises() {
         viewModelScope.launch(Dispatchers.IO) {
             gyms.postValue(repository.getExerciseList())
         }

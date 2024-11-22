@@ -54,15 +54,5 @@ class ClockFragment : Fragment() {
             viewModel.startTimer(minutes)
         }
     }
-
-    override fun onStart() {
-        super.onStart()
-        findNavController().addOnDestinationChangedListener(viewModel::onDestinationChange)
-    }
-
-    override fun onStop() {
-        findNavController().removeOnDestinationChangedListener(viewModel::onDestinationChange)
-        super.onStop()
-    }
 }
 

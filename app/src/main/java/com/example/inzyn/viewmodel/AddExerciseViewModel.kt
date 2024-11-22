@@ -30,7 +30,7 @@ class AddExerciseViewModel : ViewModel() {
     fun init(id: Int?) {
         id?.let {
             viewModelScope.launch {
-                edited = repository.getExerciseById(it)?.also {
+                edited = repository.getExerciseById(it).also {
                     withContext(Dispatchers.Main) {
                         name.value = it.name
                         description.value = it.description
