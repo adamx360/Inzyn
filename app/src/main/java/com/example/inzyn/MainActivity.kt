@@ -1,7 +1,9 @@
 package com.example.inzyn
 
+import android.content.Context
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
+import android.util.AttributeSet
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -9,7 +11,10 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import com.example.inzyn.databinding.ActivityMainBinding
+import com.example.inzyn.fragments.ClockFragment
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,8 +33,9 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-        binding.clock.setOnClickListener {
-        }
+//        binding.clock.setOnClickListener {
+//            navController.navigate(R.id.action_listFragment2_to_clockFragment)
+//        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

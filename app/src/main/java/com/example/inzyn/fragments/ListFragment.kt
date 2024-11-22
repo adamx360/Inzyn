@@ -74,6 +74,10 @@ class ListFragment : Fragment() {
         viewModel.navigation.observe(viewLifecycleOwner) {
             it.resolve(findNavController())
         }
+
+        binding.floatingClock.setOnClickListener {
+                findNavController().navigate(R.id.action_listFragment2_to_clockFragment)
+        }
     }
 
     override fun onStart() {

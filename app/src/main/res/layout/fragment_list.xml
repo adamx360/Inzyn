@@ -42,6 +42,17 @@
             app:layout_constraintEnd_toEndOf="@+id/exerciseList"
             app:layout_constraintTop_toBottomOf="@+id/exerciseList" />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatingClock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:clickable="true"
+            app:layout_constraintEnd_toEndOf="@+id/addExercise"
+            app:layout_constraintTop_toBottomOf="@+id/addExercise"
+            app:srcCompat="@drawable/baseline_watch_later_24" />
+
         <!-- Navigation Button -->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
