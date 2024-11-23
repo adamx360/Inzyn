@@ -1,52 +1,76 @@
 package com.example.inzyn.viewmodel
 
 
-import android.os.Bundle
+import android.icu.text.DecimalFormat
 import android.os.CountDownTimer
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
-import com.example.inzyn.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ClockViewModel : ViewModel() {
     private var countDownTimer: CountDownTimer? = null
-    private val remainingTime = MutableLiveData<String>()
-    private val isRunning = MutableLiveData<Boolean>()
+    private val _remainingTime = MutableLiveData<String>()
+    val remainingTime: LiveData<String> get() = _remainingTime
+
+    private val _isRunning = MutableLiveData<Boolean>()
+    val isRunning: LiveData<Boolean> get() = _isRunning
+
+    private var time:Long =  0L
 
     init {
         viewModelScope.launch {
             withContext(Dispatchers.Main) {
-                isRunning.value = false
-                remainingTime.value = "00:00"
+                _isRunning.postValue(false)
+                _remainingTime.postValue( "00:00")
             }
         }
     }
 
-    fun startTimer(minutes: Int) {
-        if (minutes > 0) {
-            val totalMilliseconds = minutes * 60 * 1000L
-            isRunning.value = true
-
-            countDownTimer = object : CountDownTimer(totalMilliseconds, 1000) {
-                override fun onTick(millisUntilFinished: Long) {
-                    val remainingMinutes = (millisUntilFinished / 1000) / 60
-                    val remainingSeconds = (millisUntilFinished / 1000) % 60
-                    remainingTime.value =
-                        String.format("%02d:%02d", remainingMinutes, remainingSeconds)
-                }
-
-                override fun onFinish() {
-                    remainingTime.value = "00:00"
-                    isRunning.value = false
-                }
+    fun startTimer(interval: Long = 1000L){
+        stopTimer()
+        countDownTimer = object : CountDownTimer(time,interval){
+            override fun onTick(millisUntilFinished: Long) {
+                time = millisUntilFinished
+                updateTimeDisplay(time)
             }
-            countDownTimer?.start()
 
-        }
+            override fun onFinish() {
+                _remainingTime.postValue("00:00")
+                _isRunning.postValue(true)
+
+            }
+        }.start()
     }
+
+    fun updateTimeDisplay(millis: Long){
+        val f = DecimalFormat("00")
+        val min = (millis / 60000) % 60
+        val sec = (millis / 1000) % 60
+        _remainingTime.postValue("${f.format(min)}:${f.format(sec)}")
+
+    }
+    fun stopTimer(){
+        countDownTimer?.cancel()
+    }
+
+    fun addTime(seconds: Long){
+        time += seconds*1000
+        updateTimeDisplay(time)
+    }
+
+    fun subtractTime(seconds: Long){
+        time = (time - seconds*1000).coerceAtLeast(0)
+        updateTimeDisplay(time)
+    }
+
+
+
+
+
+
+
 }
