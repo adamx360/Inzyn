@@ -17,7 +17,7 @@ private const val TYPE_KEY = "type"
 
 class AddExerciseFragment : Fragment() {
     private lateinit var binding: FragmentAddExerciseBinding
-    private val viewModel by viewModels<AddExerciseViewModel>()
+    private val viewModel: AddExerciseViewModel by viewModels()
     private lateinit var type: AddExerciseType
 
 
@@ -40,6 +40,7 @@ class AddExerciseFragment : Fragment() {
         return FragmentAddExerciseBinding.inflate(inflater, container, false).also {
             binding = it
             binding.viewModel = viewModel
+            binding.lifecycleOwner = viewLifecycleOwner
         }.root
     }
 

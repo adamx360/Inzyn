@@ -28,22 +28,31 @@ class AddExerciseViewModel : ViewModel() {
     val description = MutableLiveData("")
 
     fun init(id: Int?) {
-        id?.let {
+        buttonText.value = R.string.add
+        if (id != null) {
             viewModelScope.launch {
-                edited = repository.getExerciseById(it).also {
-                    withContext(Dispatchers.Main) {
-                        name.value = it.name
-                        description.value = it.description
-                    }
+                try {
+                    val exercise = repository.getExerciseById(id)
+                    println("found")
+                    edited = exercise
+                    name.postValue(exercise.name)
+                    description.postValue(exercise.description)
+                    buttonText.postValue(R.string.save)
+                } catch (e: NoSuchElementException) {
+                    println("not found")
+                    edited = null
+                    name.postValue("")
+                    description.postValue("")
+                    buttonText.postValue(R.string.add)
                 }
             }
+        } else {
+            println("no id")
+            edited = null
+            name.postValue("")
+            description.postValue("")
+            buttonText.postValue(R.string.add)
         }
-
-        buttonText.value = when (edited) {
-            null -> R.string.add
-            else -> R.string.save
-        }
-
     }
 
     fun onSave() {

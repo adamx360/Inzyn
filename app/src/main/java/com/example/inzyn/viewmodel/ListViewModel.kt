@@ -48,8 +48,8 @@ class ListViewModel : ViewModel() {
         navigation.value = AddExercise()
     }
 
-    fun onEditExercise(id: Int) {
-        navigation.value = EditExercise(id)
+    fun onEditExercise(exercise: Exercise) {
+        navigation.value = EditExercise(exercise)
     }
 
     fun onExerciseRemove(id: Int) {

@@ -35,7 +35,7 @@ class ListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         exerciseListAdapter = ExerciseListAdapter(
-            onItemClick = { position -> viewModel.onEditExercise(exerciseListAdapter.exerciseList[position].id)
+            onItemClick = { position -> viewModel.onEditExercise(exerciseListAdapter.exerciseList[position])
             },
             onItemLongClick = { position ->
                 val selectedExercise: Exercise = exerciseListAdapter.exerciseList[position]
