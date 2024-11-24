@@ -65,13 +65,13 @@ abstract class GymDb : RoomDatabase() {
                 println("Database populated with exercises: $exerciseEntities")
 
                 val planEntities = listOf(
-                    PlanEntity(name = "Chest", exercisesIDs = emptyList()),
-                    PlanEntity(name = "Legs", exercisesIDs = emptyList()),
-                    PlanEntity(name = "Back", exercisesIDs = emptyList()),
-                    PlanEntity(name = "Abs", exercisesIDs = emptyList()),
-                    PlanEntity(name = "Shoulders", exercisesIDs = emptyList()),
-                    PlanEntity(name = "Biceps", exercisesIDs = emptyList()),
-                    PlanEntity(name = "Triceps", exercisesIDs = emptyList())
+                    PlanEntity(name = "Chest", exercisesIDs = listOf(1,2,3)),
+                    PlanEntity(name = "Legs", exercisesIDs = listOf(1,2,3)),
+                    PlanEntity(name = "Back", exercisesIDs = listOf(1,2,3)),
+                    PlanEntity(name = "Abs", exercisesIDs = listOf(1,2,3)),
+                    PlanEntity(name = "Shoulders", exercisesIDs = listOf(1,2,3)),
+                    PlanEntity(name = "Biceps", exercisesIDs = listOf(1,2,3)),
+                    PlanEntity(name = "Triceps", exercisesIDs = listOf(1,2,3))
                 )
                 planEntities.forEach { planDao.createOrUpdate(it) }
                 println("Database populated with plans: $planEntities")

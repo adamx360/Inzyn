@@ -15,11 +15,17 @@
             android:id="@+id/action_listFragment_to_addExerciseFragment"
             app:destination="@id/addExerciseFragment" />
         <action
+            android:id="@+id/action_listFragment_to_addSetFragment"
+            app:destination="@id/addSetFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_planFragment"
+            app:destination="@id/planFragment" />
+        <action
             android:id="@+id/action_listFragment_to_clockFragment"
             app:destination="@id/clockFragment" />
         <action
-            android:id="@+id/action_listFragment_to_addSetFragment"
-            app:destination="@id/addSetFragment" />
+            android:id="@+id/action_listFragment_to_addPlanFragment"
+            app:destination="@id/addPlanFragment" />
     </fragment>
     <fragment
         android:id="@+id/calendarFragment"
@@ -27,19 +33,46 @@
         android:label="@string/calendar_fragment_label"
         tools:layout="@layout/fragment_calendar">
         <action
-            android:id="@+id/action_calendarFragment_to_listFragment"
-            app:destination="@id/listFragment" />
+            android:id="@+id/action_calendarFragment_to_addExerciseFragment"
+            app:destination="@id/addExerciseFragment" />
         <action
             android:id="@+id/action_calendarFragment_to_addSetFragment"
             app:destination="@id/addSetFragment" />
+        <action
+            android:id="@+id/action_calendarFragment_to_planFragment"
+            app:destination="@id/planFragment" />
+        <action
+            android:id="@+id/action_calendarFragment_to_clockFragment"
+            app:destination="@id/clockFragment" />
+        <action
+            android:id="@+id/action_calendarFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+        <action
+            android:id="@+id/action_calendarFragment_to_addPlanFragment"
+            app:destination="@id/addPlanFragment" />
     </fragment>
     <fragment
         android:id="@+id/addExerciseFragment"
         android:name="com.example.inzyn.fragments.AddExerciseFragment"
         android:label="AddExerciseFragment" >
         <action
+            android:id="@+id/action_addExerciseFragment_to_addSetFragment"
+            app:destination="@id/addSetFragment" />
+        <action
+            android:id="@+id/action_addExerciseFragment_to_planFragment"
+            app:destination="@id/planFragment" />
+        <action
+            android:id="@+id/action_addExerciseFragment_to_clockFragment"
+            app:destination="@id/clockFragment" />
+        <action
             android:id="@+id/action_addExerciseFragment_to_listFragment"
             app:destination="@id/listFragment" />
+        <action
+            android:id="@+id/action_addExerciseFragment_to_calendarFragment"
+            app:destination="@id/calendarFragment" />
+        <action
+            android:id="@+id/action_addExerciseFragment_to_addPlanFragment"
+            app:destination="@id/addPlanFragment" />
     </fragment>
     <fragment
         android:id="@+id/clockFragment"
@@ -48,16 +81,89 @@
         <action
             android:id="@+id/action_clockFragment_to_listFragment"
             app:destination="@id/listFragment" />
+        <action
+            android:id="@+id/action_clockFragment_to_calendarFragment"
+            app:destination="@id/calendarFragment" />
+        <action
+            android:id="@+id/action_clockFragment_to_addExerciseFragment"
+            app:destination="@id/addExerciseFragment" />
+        <action
+            android:id="@+id/action_clockFragment_to_addSetFragment"
+            app:destination="@id/addSetFragment" />
+        <action
+            android:id="@+id/action_clockFragment_to_planFragment"
+            app:destination="@id/planFragment" />
+        <action
+            android:id="@+id/action_clockFragment_to_addPlanFragment"
+            app:destination="@id/addPlanFragment" />
     </fragment>
     <fragment
         android:id="@+id/addSetFragment"
         android:name="com.example.inzyn.fragments.AddSetFragment"
         android:label="AddSetFragment" >
         <action
+            android:id="@+id/action_addSetFragment_to_planFragment"
+            app:destination="@id/planFragment" />
+        <action
+            android:id="@+id/action_addSetFragment_to_clockFragment"
+            app:destination="@id/clockFragment" />
+        <action
             android:id="@+id/action_addSetFragment_to_listFragment"
             app:destination="@id/listFragment" />
         <action
             android:id="@+id/action_addSetFragment_to_calendarFragment"
             app:destination="@id/calendarFragment" />
+        <action
+            android:id="@+id/action_addSetFragment_to_addExerciseFragment"
+            app:destination="@id/addExerciseFragment" />
+        <action
+            android:id="@+id/action_addSetFragment_to_addPlanFragment"
+            app:destination="@id/addPlanFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/planFragment"
+        android:name="com.example.inzyn.fragments.PlanFragment"
+        android:label="PlanFragment" >
+        <action
+            android:id="@+id/action_planFragment_to_clockFragment"
+            app:destination="@id/clockFragment" />
+        <action
+            android:id="@+id/action_planFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+        <action
+            android:id="@+id/action_planFragment_to_calendarFragment"
+            app:destination="@id/calendarFragment" />
+        <action
+            android:id="@+id/action_planFragment_to_addExerciseFragment"
+            app:destination="@id/addExerciseFragment" />
+        <action
+            android:id="@+id/action_planFragment_to_addSetFragment"
+            app:destination="@id/addSetFragment" />
+        <action
+            android:id="@+id/action_planFragment_to_addPlanFragment"
+            app:destination="@id/addPlanFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addPlanFragment"
+        android:name="com.example.inzyn.fragments.AddPlanFragment"
+        android:label="AddPlanFragment" >
+        <action
+            android:id="@+id/action_addPlanFragment_to_addSetFragment"
+            app:destination="@id/addSetFragment" />
+        <action
+            android:id="@+id/action_addPlanFragment_to_clockFragment"
+            app:destination="@id/clockFragment" />
+        <action
+            android:id="@+id/action_addPlanFragment_to_calendarFragment"
+            app:destination="@id/calendarFragment" />
+        <action
+            android:id="@+id/action_addPlanFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+        <action
+            android:id="@+id/action_addPlanFragment_to_addExerciseFragment"
+            app:destination="@id/addExerciseFragment" />
+        <action
+            android:id="@+id/action_addPlanFragment_to_planFragment"
+            app:destination="@id/planFragment" />
     </fragment>
 </navigation>
