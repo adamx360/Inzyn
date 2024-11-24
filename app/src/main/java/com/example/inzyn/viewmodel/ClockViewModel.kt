@@ -1,15 +1,19 @@
 package com.example.inzyn.viewmodel
 
 
+import android.content.Context
 import android.icu.text.DecimalFormat
+import android.media.MediaPlayer
 import android.os.CountDownTimer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.inzyn.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
 
 class ClockViewModel : ViewModel() {
     private var countDownTimer: CountDownTimer? = null
@@ -20,6 +24,8 @@ class ClockViewModel : ViewModel() {
     val isRunning: LiveData<Boolean> get() = _isRunning
 
     private var time:Long =  0L
+    private var starterTime: Long = 0L
+    private lateinit var mediaPlayer: MediaPlayer
 
     init {
         viewModelScope.launch {
@@ -41,7 +47,6 @@ class ClockViewModel : ViewModel() {
             override fun onFinish() {
                 _remainingTime.postValue("00:00")
                 _isRunning.postValue(true)
-
             }
         }.start()
     }
@@ -51,8 +56,8 @@ class ClockViewModel : ViewModel() {
         val min = (millis / 60000) % 60
         val sec = (millis / 1000) % 60
         _remainingTime.postValue("${f.format(min)}:${f.format(sec)}")
-
     }
+
     fun stopTimer(){
         countDownTimer?.cancel()
     }
@@ -67,10 +72,19 @@ class ClockViewModel : ViewModel() {
         updateTimeDisplay(time)
     }
 
+    fun resetTimer(){
+        stopTimer()
+        time = starterTime
+        updateTimeDisplay(time)
+        _isRunning.postValue(false)
+    }
 
-
-
-
-
+    fun playSound(context: Context){
+        mediaPlayer = MediaPlayer.create(context,R.raw.timer)
+        mediaPlayer.start()
+        mediaPlayer.setOnCompletionListener {
+            it.release()
+        }
+    }
 
 }
