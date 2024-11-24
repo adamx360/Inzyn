@@ -9,7 +9,7 @@ import com.example.inzyn.model.Set
 class EditSet(val set: Set) : Destination() {
     override fun navigate(controller: NavController) {
         controller.navigate(
-            R.id.action_listFragment_to_addSetFragment,
+            R.id.action_calendarFragment_to_addSetFragment,
             bundleOf("type" to AddSetType.Edit(set.id))
         )
 

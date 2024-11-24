@@ -5,29 +5,30 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.inzyn.R
+import com.example.inzyn.adapters.SetListAdapter
 import com.example.inzyn.databinding.FragmentCalendarBinding
+import com.example.inzyn.model.Set
+import com.example.inzyn.viewmodel.CalendarViewModel
 
-/**
- * A simple [Fragment] subclass as the second destination in the navigation.
- */
 class CalendarFragment : Fragment() {
-
-    private var _binding: FragmentCalendarBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentCalendarBinding
+    private lateinit var setListAdapter: SetListAdapter
+    private val viewModel: CalendarViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-        _binding = FragmentCalendarBinding.inflate(inflater, container, false)
-        return binding.root
-
+        return FragmentCalendarBinding.inflate(inflater, container, false).also {
+            binding = it
+            binding.viewModel = viewModel
+            binding.lifecycleOwner = viewLifecycleOwner
+        }.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -36,10 +37,52 @@ class CalendarFragment : Fragment() {
         binding.buttonSecond.setOnClickListener {
             findNavController().navigate(R.id.action_calendarFragment_to_listFragment)
         }
+
+        setListAdapter = SetListAdapter(
+            onItemClick = { position -> viewModel.onEditSet(setListAdapter.setList[position])
+            },
+            onItemLongClick = { position ->
+                val selectedSet: Set = setListAdapter.setList[position]
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Usuń przedmiot")
+                    .setMessage("Czy napewno chcesz usunąć serie ${selectedSet.exerciseName}?")
+                    .setPositiveButton("Usuń") { dialog, _ ->
+                        viewModel.onSetRemove(selectedSet.id)
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton("Anuluj") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            }
+        )
+
+        binding.setList.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = setListAdapter
+        }
+
+        viewModel.sets.observe(viewLifecycleOwner) {
+            println("Loaded sets: $it") // Debugowanie danych
+            setListAdapter.setList = it
+        }
+
+        viewModel.navigation.observe(viewLifecycleOwner) {
+            it.resolve(findNavController())
+        }
+
+        binding.calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
+            val selectedDate = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth)
+            viewModel.onDateSelected(selectedDate)
+        }
+    }
+    override fun onStart() {
+        super.onStart()
+        findNavController().addOnDestinationChangedListener(viewModel::onDestinationChange)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    override fun onStop() {
+        findNavController().removeOnDestinationChangedListener(viewModel::onDestinationChange)
+        super.onStop()
     }
 }

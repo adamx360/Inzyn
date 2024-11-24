@@ -14,11 +14,7 @@ import com.example.inzyn.model.navigation.PopBack
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 
 class AddSetViewModel : ViewModel() {
     private val repository: SetRepository = RepositoryLocator.setRepository
@@ -42,10 +38,10 @@ class AddSetViewModel : ViewModel() {
             viewModelScope.launch {
                 try {
                     val set = repository.getSetById(id)
-                    exerciseName.postValue(exerciseRepository.getExerciseById(exerciseIDs).name)
+                    exerciseName.postValue(set.exerciseName)
                     println("found")
                     edited = set
-                    name.postValue(exerciseName.value)
+                    name.postValue(set.exerciseName)
                     description.postValue(set.description)
                     weight.postValue(set.weight.toString())
                     reps.postValue(set.reps.toString())
@@ -54,12 +50,14 @@ class AddSetViewModel : ViewModel() {
                 } catch (e: NoSuchElementException) {
                     println("not found")
                     edited = null
+                    exerciseName.postValue("notfound1")
                     name.postValue("notfound")
                     description.postValue("")
                     weight.postValue("0.0")
                     reps.postValue("0")
                     date.postValue(LocalDate.now().toString())
                     buttonText.postValue(R.string.add)
+                    exerciseName.postValue("")
                 }
             }
         } else {
@@ -67,7 +65,6 @@ class AddSetViewModel : ViewModel() {
                 println("no id")
                 edited = null
                 exerciseName.postValue(exerciseRepository.getExerciseById(exerciseIDs).name)
-                name.postValue(exerciseName.value)
                 description.postValue("")
                 weight.postValue("0.0")
                 reps.postValue("0")
@@ -83,10 +80,12 @@ class AddSetViewModel : ViewModel() {
         val weight = weight.value.orEmpty().toDouble()
         val reps = reps.value.orEmpty().toInt()
         val date = date.value.orEmpty()
+        val exerciseName = exerciseName.value.orEmpty()
 
         val toSave = edited?.copy(
             description = description,
             exerciseID = exerciseID,
+            exerciseName = exerciseName,
             weight = weight,
             reps = reps,
             date = date
@@ -94,6 +93,7 @@ class AddSetViewModel : ViewModel() {
             id = GENERATE_ID,
             description = description,
             exerciseID = exerciseID,
+            exerciseName = exerciseName,
             weight = weight,
             reps = reps,
             date = date
@@ -109,12 +109,5 @@ class AddSetViewModel : ViewModel() {
                 navigation.value = PopBack()
             }
         }
-    }
-
-    private fun parseDate(dateString: String): Calendar {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val date = Calendar.getInstance()
-        date.time = dateFormat.parse(dateString) ?: Date()
-        return date
     }
 }

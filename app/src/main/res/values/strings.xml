@@ -54,4 +54,6 @@
     <string name="weight">Weight</string>
     <string name="add_set">Add set</string>
     <string name="reps">Reps</string>
+    <string name="reps2">Reps:</string>
+    <string name="weight2">Weight:</string>
 </resources>
