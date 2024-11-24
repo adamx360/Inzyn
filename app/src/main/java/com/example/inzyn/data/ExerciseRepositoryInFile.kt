@@ -1,7 +1,7 @@
 package com.example.inzyn.data
 
 import android.content.Context
-import com.example.inzyn.data.db.ExerciseDb
+import com.example.inzyn.data.db.GymDb
 import com.example.inzyn.model.Exercise
 import com.example.inzyn.model.db.ExerciseEntity.Companion.toEntity
 import kotlinx.coroutines.CoroutineScope
@@ -9,7 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class ExerciseRepositoryInFile(val context: Context, scope: CoroutineScope) : ExerciseRepository {
-    private val db: ExerciseDb = ExerciseDb.open(context, scope)
+    private val db: GymDb = GymDb.open(context, scope)
 
     override suspend fun getExerciseList(): List<Exercise> = withContext(Dispatchers.IO) {
         val exercises = db.exercise.getAll()

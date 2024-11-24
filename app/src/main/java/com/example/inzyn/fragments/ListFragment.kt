@@ -50,6 +50,10 @@ class ListFragment : Fragment() {
                         dialog.dismiss()
                     }
                     .show()
+            },
+            addSet = { position ->
+                val exerciseId = exerciseListAdapter.exerciseList[position]
+                navigateToAddSetFragment(exerciseId)
             }
         )
 
@@ -58,7 +62,7 @@ class ListFragment : Fragment() {
             adapter = exerciseListAdapter
         }
 
-        viewModel.gyms.observe(viewLifecycleOwner) {
+        viewModel.exercises.observe(viewLifecycleOwner) {
             println("Loaded gyms: $it") // Debugowanie danych
             exerciseListAdapter.exerciseList = it
         }
@@ -78,6 +82,13 @@ class ListFragment : Fragment() {
         binding.floatingClock.setOnClickListener {
                 findNavController().navigate(R.id.action_listFragment_to_clockFragment)
         }
+    }
+
+    private fun navigateToAddSetFragment(exercise: Exercise) {
+        val bundle = Bundle().apply {
+            putInt("exerciseID", exercise.id)
+        }
+        findNavController().navigate(R.id.action_listFragment_to_addSetFragment, bundle)
     }
 
     override fun onStart() {

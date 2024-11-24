@@ -9,7 +9,7 @@ import com.example.inzyn.model.db.ExerciseEntity
 @Dao
 interface ExerciseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun createOrUpdate(gym: ExerciseEntity)
+    suspend fun createOrUpdate(exercise: ExerciseEntity)
 
     @Query("SELECT * FROM exercise;")
     suspend fun getAll(): List<ExerciseEntity>

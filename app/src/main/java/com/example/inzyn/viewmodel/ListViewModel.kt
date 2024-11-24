@@ -10,6 +10,7 @@ import com.example.inzyn.R
 import com.example.inzyn.data.RepositoryLocator
 import com.example.inzyn.model.Exercise
 import com.example.inzyn.model.navigation.AddExercise
+import com.example.inzyn.model.navigation.AddSet
 import com.example.inzyn.model.navigation.Destination
 import com.example.inzyn.model.navigation.EditExercise
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +18,8 @@ import kotlinx.coroutines.launch
 
 class ListViewModel : ViewModel() {
     private val repository = RepositoryLocator.exerciseRepository
-    val gyms: MutableLiveData<List<Exercise>> = MutableLiveData(emptyList())
+    private val setRepository = RepositoryLocator.setRepository
+    val exercises: MutableLiveData<List<Exercise>> = MutableLiveData(emptyList())
     val navigation = MutableLiveData<Destination>()
 
     init {
@@ -26,7 +28,8 @@ class ListViewModel : ViewModel() {
 
     private fun loadExercises() {
         viewModelScope.launch(Dispatchers.IO) {
-            gyms.postValue(repository.getExerciseList())
+            exercises.postValue(repository.getExerciseList())
+            setRepository.getSetList()
         }
     }
 

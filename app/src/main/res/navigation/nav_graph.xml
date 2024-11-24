@@ -17,6 +17,9 @@
         <action
             android:id="@+id/action_listFragment_to_clockFragment"
             app:destination="@id/clockFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_addSetFragment"
+            app:destination="@id/addSetFragment" />
     </fragment>
     <fragment
         android:id="@+id/calendarFragment"
@@ -41,6 +44,14 @@
         android:label="ClockFragment" >
         <action
             android:id="@+id/action_clockFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addSetFragment"
+        android:name="com.example.inzyn.fragments.AddSetFragment"
+        android:label="AddSetFragment" >
+        <action
+            android:id="@+id/action_addSetFragment_to_listFragment"
             app:destination="@id/listFragment" />
     </fragment>
 </navigation>

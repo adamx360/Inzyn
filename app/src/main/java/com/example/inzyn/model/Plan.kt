@@ -1,7 +1,7 @@
 package com.example.inzyn.model
 
-data class Exercise(
+data class Plan(
     val id: Int,
     val name: String,
-    val description: String?,
+    val exercisesIDs: List<Int>,
 )
