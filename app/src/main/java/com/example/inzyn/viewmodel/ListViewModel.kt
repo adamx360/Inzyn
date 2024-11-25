@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 class ListViewModel : ViewModel() {
     private val repository = RepositoryLocator.exerciseRepository
     private val setRepository = RepositoryLocator.setRepository
+    private val planRepository = RepositoryLocator.planRepository
     val exercises: MutableLiveData<List<Exercise>> = MutableLiveData(emptyList())
     val navigation = MutableLiveData<Destination>()
 
@@ -65,6 +66,19 @@ class ListViewModel : ViewModel() {
     fun onDestinationChange(controller: NavController, destination: NavDestination, arguments: Bundle?) {
         if (destination.id == R.id.listFragment) {
             this.loadExercises()
+        }
+    }
+
+    fun addExerciseToPlan(exerciseId: Int, planDayId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val plan = planRepository.getPlanById(planDayId)
+                val updatedPlan = plan.copy(exercisesIDs = plan.exercisesIDs + exerciseId)
+                planRepository.set(updatedPlan)
+                println("Exercise $exerciseId added to plan $planDayId")
+            } catch (e: NoSuchElementException) {
+                println("Plan with ID $planDayId not found")
+            }
         }
     }
 }

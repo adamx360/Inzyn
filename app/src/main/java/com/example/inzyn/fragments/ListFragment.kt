@@ -40,13 +40,17 @@ class ListFragment : Fragment() {
             onItemLongClick = { position ->
                 val selectedExercise: Exercise = exerciseListAdapter.exerciseList[position]
                 AlertDialog.Builder(requireContext())
-                    .setTitle("Usuń przedmiot")
-                    .setMessage("Czy napewno chcesz usunąć ${selectedExercise.name}?")
-                    .setPositiveButton("Usuń") { dialog, _ ->
+                    .setTitle("Edytuj ćwiczenie")
+                    .setMessage("Czy chcesz dodać do planu czy usunąć ${selectedExercise.name}?")
+                    .setPositiveButton("Dodaj") { dialog, _ ->
+                        showDaySelectionDialog(selectedExercise.id)
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton("Usuń") { dialog, _ ->
                         viewModel.onExerciseRemove(selectedExercise.id)
                         dialog.dismiss()
                     }
-                    .setNegativeButton("Anuluj") { dialog, _ ->
+                    .setNeutralButton("Anuluj") { dialog, _ ->
                         dialog.dismiss()
                     }
                     .show()
@@ -86,6 +90,22 @@ class ListFragment : Fragment() {
         binding.planNavButton.setOnClickListener {
             findNavController().navigate(R.id.action_listFragment_to_planFragment)
         }
+    }
+    private fun showDaySelectionDialog(exerciseId: Int) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Dodaj do planu")
+            .setItems(
+                arrayOf("Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela")
+            ) { dialog, which ->
+                // `which` to indeks wybranej pozycji (0 = Poniedziałek, 6 = Niedziela)
+                val planDayId = which + 1 // Zakładamy, że ID planu to numer dnia tygodnia
+                viewModel.addExerciseToPlan(exerciseId, planDayId)
+                dialog.dismiss()
+            }
+            .setNegativeButton("Anuluj") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 
     private fun navigateToAddSetFragment(exercise: Exercise) {
