@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Inzyn</string>
+    <string name="action_settings">" Einstellungen"</string>
+    <string name="list_fragment_label">" Übungsliste"</string>
+    <string name="calendar_fragment_label">Kalender</string>
+    <string name="next">Nächste</string>
+    <string name="previous">Zurück</string>
+    <string name="go_to_calendar">" Zum Kalender"</string>
+    <string name="add_exercise">Übung hinzufügen</string>
+    <string name="exercise">Übung</string>
+    <string name="name">Name</string>
+    <string name="exercise_name">Übungsname</string>
+    <string name="add">" Hinzufügen"</string>
+    <string name="save">Speichern</string>
+    <string name="description">Beschreibung</string>
+    <string name="weight">Waage</string>
+    <string name="add_set">" Serie hinzufügen"</string>
+    <string name="reps">Wiederholungen</string>
+    <string name="reps2">Wiederholungen:</string>
+    <string name="weight2">Waage:</string>
+</resources>
