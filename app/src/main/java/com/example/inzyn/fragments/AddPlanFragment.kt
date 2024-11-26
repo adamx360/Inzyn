@@ -58,13 +58,12 @@ class AddPlanFragment : Fragment() {
         }
 
         exerciseListAdapter = ExerciseListAdapter(
-            onItemClick = { position -> viewModel.onEditExercise(exerciseListAdapter.exerciseList[position])
-            },
+            onItemClick = {},
             onItemLongClick = { position ->
                 val selectedExercise: Exercise = exerciseListAdapter.exerciseList[position]
                 AlertDialog.Builder(requireContext())
-                    .setTitle("Edytuj ćwiczenie")
-                    .setMessage("Czy chcesz dodać lub usunąć ${selectedExercise.name} z planu?")
+                    .setTitle("Usuń ćwiczenie")
+                    .setMessage("Chcesz usunąć ${selectedExercise.name} z planu?")
                     .setNegativeButton("Usuń") { dialog, _ ->
                         viewModel.removeExerciseFromPlan(selectedExercise.id)
                         dialog.dismiss()

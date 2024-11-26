@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_listFragment_to_addPlanFragment"
             app:destination="@id/addPlanFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_todayPlanFragment"
+            app:destination="@id/todayPlanFragment" />
     </fragment>
     <fragment
         android:id="@+id/calendarFragment"
@@ -50,6 +53,9 @@
         <action
             android:id="@+id/action_calendarFragment_to_addPlanFragment"
             app:destination="@id/addPlanFragment" />
+        <action
+            android:id="@+id/action_calendarFragment_to_todayPlanFragment"
+            app:destination="@id/todayPlanFragment" />
     </fragment>
     <fragment
         android:id="@+id/addExerciseFragment"
@@ -73,6 +79,9 @@
         <action
             android:id="@+id/action_addExerciseFragment_to_addPlanFragment"
             app:destination="@id/addPlanFragment" />
+        <action
+            android:id="@+id/action_addExerciseFragment_to_todayPlanFragment"
+            app:destination="@id/todayPlanFragment" />
     </fragment>
     <fragment
         android:id="@+id/clockFragment"
@@ -96,6 +105,9 @@
         <action
             android:id="@+id/action_clockFragment_to_addPlanFragment"
             app:destination="@id/addPlanFragment" />
+        <action
+            android:id="@+id/action_clockFragment_to_todayPlanFragment"
+            app:destination="@id/todayPlanFragment" />
     </fragment>
     <fragment
         android:id="@+id/addSetFragment"
@@ -119,6 +131,9 @@
         <action
             android:id="@+id/action_addSetFragment_to_addPlanFragment"
             app:destination="@id/addPlanFragment" />
+        <action
+            android:id="@+id/action_addSetFragment_to_todayPlanFragment"
+            app:destination="@id/todayPlanFragment" />
     </fragment>
     <fragment
         android:id="@+id/planFragment"
@@ -142,6 +157,9 @@
         <action
             android:id="@+id/action_planFragment_to_addPlanFragment"
             app:destination="@id/addPlanFragment" />
+        <action
+            android:id="@+id/action_planFragment_to_todayPlanFragment"
+            app:destination="@id/todayPlanFragment" />
     </fragment>
     <fragment
         android:id="@+id/addPlanFragment"
@@ -165,5 +183,34 @@
         <action
             android:id="@+id/action_addPlanFragment_to_planFragment"
             app:destination="@id/planFragment" />
+        <action
+            android:id="@+id/action_addPlanFragment_to_todayPlanFragment"
+            app:destination="@id/todayPlanFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/todayPlanFragment"
+        android:name="com.example.inzyn.fragments.TodayPlanFragment"
+        android:label="TodayPlanFragment" >
+        <action
+            android:id="@+id/action_todayPlanFragment_to_addSetFragment"
+            app:destination="@id/addSetFragment" />
+        <action
+            android:id="@+id/action_todayPlanFragment_to_addPlanFragment"
+            app:destination="@id/addPlanFragment" />
+        <action
+            android:id="@+id/action_todayPlanFragment_to_addExerciseFragment"
+            app:destination="@id/addExerciseFragment" />
+        <action
+            android:id="@+id/action_todayPlanFragment_to_planFragment"
+            app:destination="@id/planFragment" />
+        <action
+            android:id="@+id/action_todayPlanFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+        <action
+            android:id="@+id/action_todayPlanFragment_to_clockFragment"
+            app:destination="@id/clockFragment" />
+        <action
+            android:id="@+id/action_todayPlanFragment_to_calendarFragment"
+            app:destination="@id/calendarFragment" />
     </fragment>
 </navigation>

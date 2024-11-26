@@ -1,30 +1,31 @@
 package com.example.inzyn.fragments
 
+import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.inzyn.R
 import com.example.inzyn.adapters.ExerciseListAdapter
-import com.example.inzyn.databinding.FragmentListBinding
-import com.example.inzyn.viewmodel.ListViewModel
+import com.example.inzyn.databinding.FragmentTodayPlanBinding
 import com.example.inzyn.model.Exercise
+import com.example.inzyn.viewmodel.TodayPlanViewModel
 
-class ListFragment : Fragment() {
-    private lateinit var binding: FragmentListBinding
+class TodayPlanFragment : Fragment() {
+    private lateinit var binding: FragmentTodayPlanBinding
+    private val viewModel: TodayPlanViewModel by viewModels()
     private lateinit var exerciseListAdapter: ExerciseListAdapter
-    private val viewModel: ListViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return FragmentListBinding.inflate(inflater, container, false).also {
+        return FragmentTodayPlanBinding.inflate(inflater, container, false).also {
             binding = it
             binding.viewModel = viewModel
             binding.lifecycleOwner = viewLifecycleOwner
@@ -32,22 +33,22 @@ class ListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        with(viewModel) {
+            init()
+            navigation.observe(viewLifecycleOwner) {
+                it.resolve(findNavController())
+            }
+        }
 
         exerciseListAdapter = ExerciseListAdapter(
-            onItemClick = { position -> viewModel.onEditExercise(exerciseListAdapter.exerciseList[position])
-            },
+            onItemClick = {},
             onItemLongClick = { position ->
                 val selectedExercise: Exercise = exerciseListAdapter.exerciseList[position]
                 AlertDialog.Builder(requireContext())
-                    .setTitle("Edytuj ćwiczenie")
-                    .setMessage("Czy chcesz dodać do planu czy usunąć ${selectedExercise.name}?")
-                    .setPositiveButton("Dodaj") { dialog, _ ->
-                        showDaySelectionDialog(selectedExercise.id)
-                        dialog.dismiss()
-                    }
+                    .setTitle("Usuń ćwiczenie")
+                    .setMessage("Chcesz usunąć ${selectedExercise.name} z planu?")
                     .setNegativeButton("Usuń") { dialog, _ ->
-                        viewModel.onExerciseRemove(selectedExercise.id)
+                        viewModel.removeExerciseFromPlan(selectedExercise.id)
                         dialog.dismiss()
                     }
                     .setNeutralButton("Anuluj") { dialog, _ ->
@@ -71,52 +72,16 @@ class ListFragment : Fragment() {
             exerciseListAdapter.exerciseList = it
         }
 
-        binding.buttonFirst.setOnClickListener {
-            findNavController().navigate(R.id.action_listFragment_to_calendarFragment)
-        }
-
-        binding.addExercise.setOnClickListener {
-            viewModel.onAddExercise()
-        }
-
         viewModel.navigation.observe(viewLifecycleOwner) {
             it.resolve(findNavController())
         }
-
-        binding.floatingClock.setOnClickListener {
-            findNavController().navigate(R.id.action_listFragment_to_clockFragment)
-        }
-
-        binding.planNavButton.setOnClickListener {
-            findNavController().navigate(R.id.action_listFragment_to_planFragment)
-        }
-
-        binding.todayNavButton.setOnClickListener {
-            findNavController().navigate(R.id.action_listFragment_to_todayPlanFragment)
-        }
-    }
-    private fun showDaySelectionDialog(exerciseId: Int) {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Dodaj do planu")
-            .setItems(
-                arrayOf("Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela")
-            ) { dialog, which ->
-                // `which` to indeks wybranej pozycji (0 = Poniedziałek, 6 = Niedziela)
-                val planDayId = which + 1 // Zakładamy, że ID planu to numer dnia tygodnia
-                viewModel.addExerciseToPlan(exerciseId, planDayId)
-                dialog.dismiss()
-            }
-            .setNegativeButton("Anuluj") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
     }
 
     private fun navigateToAddSetFragment(exercise: Exercise) {
         val bundle = Bundle().apply {
             putInt("exerciseID", exercise.id)
         }
-        findNavController().navigate(R.id.action_listFragment_to_addSetFragment, bundle)
+        findNavController().navigate(R.id.action_todayPlanFragment_to_addSetFragment, bundle)
     }
 
     override fun onStart() {

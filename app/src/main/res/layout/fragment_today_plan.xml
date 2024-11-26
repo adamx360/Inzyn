@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.inzyn.viewmodel.AddPlanViewModel" />
+            type="com.example.inzyn.viewmodel.TodayPlanViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,7 +24,7 @@
             app:layout_constraintStart_toStartOf="@+id/label_name"
             app:layout_constraintTop_toBottomOf="@+id/field_name" />
 
-        <EditText
+        <TextView
             android:id="@+id/field_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -33,9 +33,9 @@
             android:autofillHints=""
             android:ems="10"
             android:hint="@string/name"
-            android:inputType="text"
             android:minHeight="48dp"
             android:text="@={viewModel.name}"
+            android:textSize="34sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/label_name"
             app:layout_constraintTop_toBottomOf="@+id/label_name" />
@@ -59,19 +59,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/label_exercises"
             tools:listitem="@layout/exercise_item" />
-
-        <Button
-            android:id="@+id/button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:onClick="@{() -> viewModel.onSave()}"
-            android:text="@{viewModel.buttonText}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:text="Dodaj" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
