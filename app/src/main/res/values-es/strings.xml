@@ -19,4 +19,6 @@
     <string name="reps">repeticiones</string>
     <string name="reps2">repeticiones:</string>
     <string name="weight2">Libra:</string>
+    <string name="exercises">Ceremonias</string>
+    <string name="go_to_plans">" A los planes"</string>
 </resources>

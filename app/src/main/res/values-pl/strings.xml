@@ -19,4 +19,6 @@
     <string name="reps">Powtórzenia</string>
     <string name="reps2">Powtórzenia:</string>
     <string name="weight2">Waga:</string>
+    <string name="exercises">Ćwiczenia</string>
+    <string name="go_to_plans">Do planów</string>
 </resources>

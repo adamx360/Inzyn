@@ -19,4 +19,6 @@
     <string name="reps">Wiederholungen</string>
     <string name="reps2">Wiederholungen:</string>
     <string name="weight2">Waage:</string>
+    <string name="exercises">Übungen</string>
+    <string name="go_to_plans">Zu den Plänen</string>
 </resources>

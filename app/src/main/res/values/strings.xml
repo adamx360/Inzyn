@@ -19,5 +19,7 @@
     <string name="reps">Reps</string>
     <string name="reps2">Reps:</string>
     <string name="weight2">Weight:</string>
-    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="exercises">Exercises</string>
+    <string name="go_to_plans">Go to plans</string>
+
 </resources>
