@@ -85,13 +85,13 @@ class MainActivity : AppCompatActivity() {
         allSets.sumOf { it.weight * it.reps }
     }
 
-    private suspend fun calculateAverageVolume(): Number = withContext(Dispatchers.IO) {
+    private suspend fun calculateAverageVolume(): String = withContext(Dispatchers.IO) {
         val allSets = RepositoryLocator.setRepository.getSetList()
         if (allSets.isNotEmpty()) {
             val average = allSets.sumOf { it.weight * it.reps } / allSets.size
-            String.format("%.2f", average).toDouble() // Zaokrąglenie do dwóch miejsc po przecinku i konwersja do Double
+            String.format("%.2f", average) // Zaokrąglenie do dwóch miejsc po przecinku i konwersja do Double
         } else {
-            0.0
+            "0.0"
         }
     }
 
