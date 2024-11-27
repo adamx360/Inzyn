@@ -9,6 +9,8 @@ import androidx.navigation.NavDestination
 import com.example.inzyn.R
 import com.example.inzyn.data.RepositoryLocator
 import com.example.inzyn.model.Exercise
+import com.example.inzyn.model.Set
+import com.example.inzyn.model.db.SetEntity
 import com.example.inzyn.model.navigation.AddExercise
 import com.example.inzyn.model.navigation.AddSet
 import com.example.inzyn.model.navigation.Destination
@@ -80,5 +82,9 @@ class ListViewModel : ViewModel() {
                 println("Plan with ID $planDayId not found")
             }
         }
+    }
+
+    suspend fun getSetsForExercise(exerciseId: Int): List<Set> {
+        return RepositoryLocator.setRepository.getSetList().filter { it.exerciseID == exerciseId }
     }
 }

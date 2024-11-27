@@ -13,63 +13,80 @@
         android:layout_height="match_parent"
         android:padding="16dp">
 
-        <!-- RecyclerView -->
+        <!-- Scrollable content -->
+
         <Button
             android:id="@+id/buttonFirst"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:text="@string/go_to_calendar"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/exerciseList"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/buttonFirst"
-            tools:listitem="@layout/exercise_item" />
-
-        <Button
-            android:id="@+id/addExercise"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="@string/add_exercise"
-            app:layout_constraintEnd_toEndOf="@+id/exerciseList"
-            app:layout_constraintTop_toBottomOf="@+id/exerciseList" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingClock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:clickable="true"
-            app:layout_constraintEnd_toEndOf="@+id/addExercise"
-            app:layout_constraintTop_toBottomOf="@+id/addExercise"
-            app:srcCompat="@drawable/baseline_watch_later_24" />
 
         <Button
             android:id="@+id/planNavButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:text="Plans"
-            app:layout_constraintBottom_toTopOf="@+id/exerciseList"
-            app:layout_constraintStart_toEndOf="@+id/buttonFirst" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatingClock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:clickable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/baseline_watch_later_24" />
 
         <Button
             android:id="@+id/todayNavButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
             android:text="Today's plan"
-            app:layout_constraintBottom_toTopOf="@+id/exerciseList"
-            app:layout_constraintEnd_toStartOf="@+id/buttonFirst" />
+            app:layout_constraintEnd_toStartOf="@+id/buttonFirst"
+            app:layout_constraintStart_toEndOf="@+id/planNavButton"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Navigation Button -->
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/todayNavButton">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/exerciseList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:listitem="@layout/exercise_item" />
+
+                <Button
+                    android:id="@+id/addExercise"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/add_exercise" />
+
+            </LinearLayout>
+        </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

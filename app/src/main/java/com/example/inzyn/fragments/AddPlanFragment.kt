@@ -76,6 +76,10 @@ class AddPlanFragment : Fragment() {
             addSet = { position ->
                 val exerciseId = exerciseListAdapter.exerciseList[position]
                 navigateToAddSetFragment(exerciseId)
+            },
+            stats = { position ->
+                val selectedExercise: Exercise = exerciseListAdapter.exerciseList[position]
+//                showExerciseStatisticsDialog(selectedExercise)
             }
         )
 

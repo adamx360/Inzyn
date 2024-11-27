@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.inzyn.R
@@ -14,6 +15,9 @@ import com.example.inzyn.adapters.ExerciseListAdapter
 import com.example.inzyn.databinding.FragmentListBinding
 import com.example.inzyn.viewmodel.ListViewModel
 import com.example.inzyn.model.Exercise
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ListFragment : Fragment() {
     private lateinit var binding: FragmentListBinding
@@ -58,7 +62,12 @@ class ListFragment : Fragment() {
             addSet = { position ->
                 val exerciseId = exerciseListAdapter.exerciseList[position]
                 navigateToAddSetFragment(exerciseId)
+            },
+            stats = { position ->
+                val selectedExercise: Exercise = exerciseListAdapter.exerciseList[position]
+                showExerciseStatisticsDialog(selectedExercise)
             }
+
         )
 
         binding.exerciseList.apply {
@@ -95,14 +104,38 @@ class ListFragment : Fragment() {
             findNavController().navigate(R.id.action_listFragment_to_todayPlanFragment)
         }
     }
+
+    private fun showExerciseStatisticsDialog(exercise: Exercise) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val sets = viewModel.getSetsForExercise(exercise.id)
+            val totalSets = sets.size
+            val totalVolume = sets.sumOf { it.weight * it.reps }
+            val averageVolume = if (totalSets > 0) totalVolume / totalSets else 0.0
+
+            val statisticsMessage = """
+            Statystyki dla ćwiczenia: ${exercise.name}
+            Łączna liczba serii: $totalSets
+            Łączna objętość: %.2f kg
+            Średnia objętość na serię: %.2f kg
+        """.trimIndent().format(totalVolume, averageVolume)
+
+            withContext(Dispatchers.Main) {
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Statystyki ćwiczenia")
+                    .setMessage(statisticsMessage)
+                    .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+                    .show()
+            }
+        }
+    }
+
     private fun showDaySelectionDialog(exerciseId: Int) {
         AlertDialog.Builder(requireContext())
             .setTitle("Dodaj do planu")
             .setItems(
                 arrayOf("Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela")
             ) { dialog, which ->
-                // `which` to indeks wybranej pozycji (0 = Poniedziałek, 6 = Niedziela)
-                val planDayId = which + 1 // Zakładamy, że ID planu to numer dnia tygodnia
+                val planDayId = which + 1
                 viewModel.addExerciseToPlan(exerciseId, planDayId)
                 dialog.dismiss()
             }

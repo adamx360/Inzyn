@@ -35,8 +35,8 @@ class AddExerciseViewModel : ViewModel() {
                     val exercise = repository.getExerciseById(id)
                     println("found")
                     edited = exercise
-                    name.postValue(exercise.name)
-                    description.postValue(exercise.description)
+                    name.postValue(exercise?.name)
+                    description.postValue(exercise?.description)
                     buttonText.postValue(R.string.save)
                 } catch (e: NoSuchElementException) {
                     println("not found")

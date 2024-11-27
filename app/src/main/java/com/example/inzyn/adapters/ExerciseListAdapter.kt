@@ -13,7 +13,7 @@ class ExerciseItem(
     var id: Int = 0
         private set
 
-    fun onBind(exerciseItem: Exercise, onItemClick: () -> Unit, onItemLongClick: () -> Unit, addSet: () -> Unit) {
+    fun onBind(exerciseItem: Exercise, onItemClick: () -> Unit, onItemLongClick: () -> Unit, addSet: () -> Unit, stats: () -> Unit) {
         with(binding) {
             id = exerciseItem.id
             name.text = exerciseItem.name
@@ -27,6 +27,9 @@ class ExerciseItem(
             addSetButton.setOnClickListener {
                 addSet()
             }
+            statsButton.setOnClickListener {
+                stats()
+            }
         }
     }
 }
@@ -34,7 +37,8 @@ class ExerciseItem(
 class ExerciseListAdapter (
     private val onItemClick: (Int) -> Unit,
     private val onItemLongClick: (Int) -> Unit,
-    private val addSet: (Int) -> Unit
+    private val addSet: (Int) -> Unit,
+    private val stats: (Int) -> Unit
 ) : RecyclerView.Adapter<ExerciseItem>(){
     var exerciseList: List<Exercise> = emptyList()
         set(value) {
@@ -56,7 +60,8 @@ class ExerciseListAdapter (
             exerciseList[position],
             onItemClick = { onItemClick(position) },
             onItemLongClick = { onItemLongClick(position) },
-            addSet = { addSet(position) }
+            addSet = { addSet(position) },
+            stats = { stats(position) }
         )
     }
 }

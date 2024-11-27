@@ -6,7 +6,7 @@ interface ExerciseRepository {
 
     suspend fun getExerciseList(): List<Exercise>
     suspend fun add(exercise: Exercise)
-    suspend fun getExerciseById(id: Int): Exercise
+    suspend fun getExerciseById(id: Int): Exercise?
     suspend fun set(exercise: Exercise)
     suspend fun removeById(id: Int)
 

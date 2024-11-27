@@ -64,7 +64,7 @@ class AddSetViewModel : ViewModel() {
             viewModelScope.launch {
                 println("no id")
                 edited = null
-                exerciseName.postValue(exerciseRepository.getExerciseById(exerciseIDs).name)
+                exerciseName.postValue(exerciseRepository.getExerciseById(exerciseIDs)?.name)
                 description.postValue("")
                 weight.postValue("0.0")
                 reps.postValue("0")

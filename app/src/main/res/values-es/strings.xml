@@ -6,7 +6,7 @@
     <string name="calendar_fragment_label">Calendario</string>
     <string name="next">Próximo</string>
     <string name="previous">Atrás</string>
-    <string name="go_to_calendar">al calendario</string>
+    <string name="go_to_calendar">calendario</string>
     <string name="add_exercise">" Añadir un ejercicio"</string>
     <string name="exercise">Ejercicio</string>
     <string name="name">Nombre</string>

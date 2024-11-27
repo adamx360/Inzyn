@@ -21,8 +21,13 @@ class ExerciseRepositoryInFile(val context: Context, scope: CoroutineScope) : Ex
         db.exercise.createOrUpdate(exercise.toEntity())
     }
 
-    override suspend fun getExerciseById(id: Int): Exercise = withContext(Dispatchers.IO) {
-        db.exercise.getById(id.toLong()).toExercise(context)
+    override suspend fun getExerciseById(id: Int): Exercise? {
+        val exerciseEntity = db.exercise.getById(id.toLong())
+        if (exerciseEntity == null) {
+            println("Exercise with ID $id not found in database.")
+            return null
+        }
+        return exerciseEntity.toExercise(context)
     }
 
     override suspend fun set(exercise: Exercise) = withContext(Dispatchers.IO) {
