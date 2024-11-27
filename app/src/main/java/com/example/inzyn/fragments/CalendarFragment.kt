@@ -44,13 +44,13 @@ class CalendarFragment : Fragment() {
             onItemLongClick = { position ->
                 val selectedSet: Set = setListAdapter.setList[position]
                 AlertDialog.Builder(requireContext())
-                    .setTitle("Usuń przedmiot")
-                    .setMessage("Czy napewno chcesz usunąć serie ${selectedSet.exerciseName}?")
-                    .setPositiveButton("Usuń") { dialog, _ ->
+                    .setTitle(String.format(getString(R.string.delete_item)))
+                    .setMessage(String.format(getString(R.string.sure_to_delete_series)) + " " + selectedSet.exerciseName + "?")
+                    .setPositiveButton(String.format(getString(R.string.Delete))) { dialog, _ ->
                         viewModel.onSetRemove(selectedSet.id)
                         dialog.dismiss()
                     }
-                    .setNegativeButton("Anuluj") { dialog, _ ->
+                    .setNegativeButton(String.format(getString(R.string.Cancel))) { dialog, _ ->
                         dialog.dismiss()
                     }
                     .show()

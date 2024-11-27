@@ -4,11 +4,11 @@
 
         <item
             android:id="@+id/Dark"
-            android:title="Dark"
+            android:title="@string/Dark"
             android:checkable="true"/>
         <item
-            android:id="@+id/White"
-            android:title="White"
+            android:id="@+id/Light"
+            android:title="@string/Light"
             android:checkable="true"/>
 
 

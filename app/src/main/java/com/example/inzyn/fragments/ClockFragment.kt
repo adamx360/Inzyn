@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.example.inzyn.R
 import com.example.inzyn.databinding.IntervalClocksBinding
 import com.example.inzyn.viewmodel.ClockViewModel
 
@@ -35,7 +36,7 @@ class ClockFragment : Fragment() {
 
         viewModel.isRunning.observe(viewLifecycleOwner) { isRunning ->
             if (isRunning) {
-                Toast.makeText(requireContext(), "Timer Finished", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.timer_finished, Toast.LENGTH_SHORT).show()
                 context?.let { viewModel.playSound(it) }
                 enableButtons(true)
             }

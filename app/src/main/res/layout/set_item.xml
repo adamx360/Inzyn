@@ -23,7 +23,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Exercise name" />
+            tools:text="@string/set_exercise_name" />
 
         <TextView
             android:id="@+id/label_weight"

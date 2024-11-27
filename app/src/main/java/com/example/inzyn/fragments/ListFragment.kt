@@ -44,17 +44,17 @@ class ListFragment : Fragment() {
             onItemLongClick = { position ->
                 val selectedExercise: Exercise = exerciseListAdapter.exerciseList[position]
                 AlertDialog.Builder(requireContext())
-                    .setTitle("Edytuj ćwiczenie")
-                    .setMessage("Czy chcesz dodać do planu czy usunąć ${selectedExercise.name}?")
-                    .setPositiveButton("Dodaj") { dialog, _ ->
+                    .setTitle(String.format(getString(R.string.edit_exercise)))
+                    .setMessage(String.format(getString(R.string.add_to_plan_or_delete))+ " " + selectedExercise.name  + "?" )
+                    .setPositiveButton(String.format(getString(R.string.Add))) { dialog, _ ->
                         showDaySelectionDialog(selectedExercise.id)
                         dialog.dismiss()
                     }
-                    .setNegativeButton("Usuń") { dialog, _ ->
+                    .setNegativeButton(String.format(getString(R.string.Delete))) { dialog, _ ->
                         viewModel.onExerciseRemove(selectedExercise.id)
                         dialog.dismiss()
                     }
-                    .setNeutralButton("Anuluj") { dialog, _ ->
+                    .setNeutralButton(String.format(getString(R.string.Cancel))) { dialog, _ ->
                         dialog.dismiss()
                     }
                     .show()
@@ -112,17 +112,33 @@ class ListFragment : Fragment() {
             val totalVolume = sets.sumOf { it.weight * it.reps }
             val averageVolume = if (totalSets > 0) totalVolume / totalSets else 0.0
 
-            val statisticsMessage = """
-            Statystyki dla ćwiczenia: ${exercise.name}
-            Łączna liczba serii: $totalSets
-            Łączna objętość: %.2f kg
-            Średnia objętość na serię: %.2f kg
-        """.trimIndent().format(totalVolume, averageVolume)
+            val messageStats =
+                String.format(getString(R.string.Stats_for_exercise) + " " + exercise.name)
+            val messageTotalSets=
+                String.format(getString(R.string.Total_sets) + " " + totalSets)
+            val messageSetsTotalVolume=
+                String.format(getString(R.string.Total_vol) + " " + totalVolume)
+            val messageAvgVolume=
+                String.format(getString(R.string.Avg_vol) + " "  + averageVolume)
+
+
+//            val statisticsMessage = """
+//            Statystyki dla ćwiczenia: ${exercise.name}
+//            Łączna liczba serii: $totalSets
+//            Łączna objętość: %.2f kg
+//            Średnia objętość na serię: %.2f kg
+//        """.trimIndent().format(totalVolume, averageVolume)
 
             withContext(Dispatchers.Main) {
                 AlertDialog.Builder(requireContext())
-                    .setTitle("Statystyki ćwiczenia")
-                    .setMessage(statisticsMessage)
+                    .setTitle(String.format(getString(R.string.Exercise_stats)))
+                    .setMessage(
+                        messageStats + "\n" +
+                                messageTotalSets + "\n" +
+                                messageSetsTotalVolume + "\n" +
+                                messageAvgVolume
+
+                    )
                     .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
                     .show()
             }
@@ -131,15 +147,24 @@ class ListFragment : Fragment() {
 
     private fun showDaySelectionDialog(exerciseId: Int) {
         AlertDialog.Builder(requireContext())
-            .setTitle("Dodaj do planu")
+            .setTitle(String.format(getString(R.string.Add_to_plan)))
             .setItems(
-                arrayOf("Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela")
+                arrayOf(
+                    String.format(getString(R.string.Monday)),
+                    String.format(getString(R.string.Tuesday)),
+                    String.format(getString(R.string.Wednesday)),
+                    String.format(getString(R.string.Thursday)),
+                    String.format(getString(R.string.Friday)),
+                    String.format(getString(R.string.Saturday)),
+                    String.format(getString(R.string.Sunday))
+                )
+
             ) { dialog, which ->
                 val planDayId = which + 1
                 viewModel.addExerciseToPlan(exerciseId, planDayId)
                 dialog.dismiss()
             }
-            .setNegativeButton("Anuluj") { dialog, _ ->
+            .setNegativeButton(String.format(getString(R.string.Cancel))) { dialog, _ ->
                 dialog.dismiss()
             }
             .show()

@@ -5,19 +5,19 @@
 
         <item
             android:id="@+id/Polish"
-            android:title="Polish"
+            android:title="@string/polish"
             android:checkable="true"/>
         <item
             android:id="@+id/German"
-            android:title="German"
+            android:title="@string/german"
             android:checkable="true"/>
         <item
             android:id="@+id/Spanish"
-            android:title="Spanish"
+            android:title="@string/spanish"
             android:checkable="true"/>
         <item
             android:id="@+id/English"
-            android:title="English"
+            android:title="@string/english"
             android:checkable="true"/>
 
 

@@ -58,17 +58,29 @@ class MainActivity : AppCompatActivity() {
             val averageVolume = calculateAverageVolume()
             val favoriteExercise = calculateFavoriteExercise()
 
-            val statisticsMessage = """
-                Łączna ilość wykonanych serii: $totalSets
-                Łączna objętość treningowa: $totalVolume kg
-                Średnia objętość na ćwiczenie: $averageVolume kg
-                Ulubione ćwiczenie: $favoriteExercise
-            """.trimIndent()
+            val messageTotalSets =
+                String.format(getString(R.string.Total_series) + " " + totalSets )
+            val messageTotalVolume =
+                String.format(getString(R.string.total_training_volume) + " " +totalVolume  + " " + "kg")
+            val messageAvgVolume =
+                String.format(getString(R.string.avg_exercise_volume) + " " + averageVolume  + " " + "kg")
+            val messageFavouriteExercise =
+                String.format(getString(R.string.fav_exercise) + " " + favoriteExercise )
+
+//            val statisticsMessage = """
+//                Łączna ilość wykonanych serii: $totalSets
+//                Łączna objętość treningowa: $totalVolume kg
+//                Średnia objętość na ćwiczenie: $averageVolume kg
+//                Ulubione ćwiczenie: $favoriteExercise
+//            """.trimIndent()
 
             withContext(Dispatchers.Main) {
                 AlertDialog.Builder(this@MainActivity)
-                    .setTitle("Statystyki ćwiczeń")
-                    .setMessage(statisticsMessage)
+                    .setTitle(String.format(getString(R.string.Exercise_stats)))
+                    .setMessage(messageTotalSets + "\n" +
+                            messageTotalVolume + "\n" +
+                            messageAvgVolume + "\n" +
+                            messageFavouriteExercise)
                     .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
                     .show()
             }
@@ -102,9 +114,9 @@ class MainActivity : AppCompatActivity() {
 
         if (favoriteExerciseId != null) {
             val exercise = RepositoryLocator.exerciseRepository.getExerciseById(favoriteExerciseId)
-            exercise?.name ?: "Ćwiczenie usunięte z bazy danych"
+            exercise?.name ?: String.format(getString(R.string.exercise_deleted_from_db))
         } else {
-            "Brak danych"
+            String.format(getString(R.string.no_data))
         }
     }
 
@@ -122,7 +134,7 @@ class MainActivity : AppCompatActivity() {
                 themeMenu()
                 true
             }
-            R.id.action_settings -> true
+
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -137,7 +149,7 @@ class MainActivity : AppCompatActivity() {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                     true
                 }
-                R.id.White -> {
+                R.id.Light -> {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                     true
                 }

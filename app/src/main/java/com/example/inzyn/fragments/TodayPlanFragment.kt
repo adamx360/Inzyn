@@ -45,13 +45,13 @@ class TodayPlanFragment : Fragment() {
             onItemLongClick = { position ->
                 val selectedExercise: Exercise = exerciseListAdapter.exerciseList[position]
                 AlertDialog.Builder(requireContext())
-                    .setTitle("Usuń ćwiczenie")
-                    .setMessage("Chcesz usunąć ${selectedExercise.name} z planu?")
-                    .setNegativeButton("Usuń") { dialog, _ ->
+                    .setTitle(String.format(getString(R.string.delete_exercise)))
+                    .setMessage(String.format(getString(R.string.do_you_want_to_delete)) + " "+ selectedExercise.name + String.format(getString(R.string.from_plan))+ " ?")
+                    .setNegativeButton(String.format(getString(R.string.Delete))) { dialog, _ ->
                         viewModel.removeExerciseFromPlan(selectedExercise.id)
                         dialog.dismiss()
                     }
-                    .setNeutralButton("Anuluj") { dialog, _ ->
+                    .setNeutralButton(String.format(getString(R.string.Cancel))) { dialog, _ ->
                         dialog.dismiss()
                     }
                     .show()

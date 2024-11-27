@@ -21,5 +21,66 @@
     <string name="weight2">Weight:</string>
     <string name="exercises">Exercises</string>
     <string name="go_to_plans">Go to plans</string>
+    <string name="Dark">Dark</string>
+    <string name="Light">Light</string>
+    <string name="Language">Language</string>
+    <string name="reset_database">Reset database</string>
+    <string name="change_theme">Change theme</string>
+    <string name="polish">Polish</string>
+    <string name="german">German</string>
+    <string name="spanish">Spanish</string>
+    <string name="english">English</string>
+    <string name="Plans">Plans</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="reset">Reset</string>
+    <string name="set_exercise_name">Exercise name</string>
+    <string name="today_s_plan">Today\'s plan</string>
+    <string name="plans">Plans</string>
+    <string name="Total_series">Total series done: </string>
+    <string name="Exercise_stats">Exercise stats</string>
+    <string name="total_training_volume">Total training volume:</string>
+    <string name="avg_exercise_volume">Average volume per exercise:</string>
+    <string name="fav_exercise">Favourite exercise</string>
+    <string name="exercise_deleted_from_db">Exercise deleted from database</string>
+    <string name="no_data">No data</string>
+    <string name="Add_to_plan">Add to plan</string>
+    <string name="Monday">Monday</string>
+    <string name="Tuesday">Tuesday</string>
+    <string name="Wednesday">Wednesday</string>
+    <string name="Thursday">Thursday</string>
+    <string name="Friday">Friday</string>
+    <string name="Saturday">Saturday</string>
+    <string name="Sunday">Sunday</string>
+    <string name="Stats_for_exercise">Stats for exercise:</string>
+    <string name="Total_sets">Total sets:</string>
+    <string name="Total_vol">Total volume:</string>
+    <string name="Avg_vol">Average volume:</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Delete">Delete</string>
+    <string name="Add">Add</string>
+    <string name="edit_exercise">Edit exercise</string>
+    <string name="add_to_plan_or_delete">Do you want to add this to plan or delete it</string>
+    <string name="delete_exercise">Delete exercise</string>
+    <string name="do_you_want_to_delete">Do you want to delete </string>
+    <string name="from_plan">from plan</string>
+    <string name="delete_item">Delete item</string>
+    <string name="sure_to_delete_series">Are you sure you want to delete the series</string>
+    <string name="timer_finished">Timer finished</string>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 </resources>

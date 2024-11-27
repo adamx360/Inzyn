@@ -2,27 +2,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.inzyn.MainActivity">
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+
     <item
         android:id="@+id/language_settings"
         android:orderInCategory="100"
-        android:title="Language"
+        android:title="@string/Language"
         app:showAsAction="never" />
 
 
     <item
         android:id="@+id/reset_database"
         android:orderInCategory="100"
-        android:title="Reset database"
+        android:title="@string/reset_database"
         app:showAsAction="never"/>
     <item
         android:id="@+id/change_theme"
         android:orderInCategory="100"
-        android:title="Change theme"
+        android:title="@string/change_theme"
         app:showAsAction="never"/>
 
 </menu>
