@@ -7,5 +7,5 @@ sealed class AddSetType : Serializable {
         private fun readResolve(): Any = New
     }
 
-    data class Edit(val id: Int) : AddSetType()
+    data class Edit(val id: String) : AddSetType()
 }

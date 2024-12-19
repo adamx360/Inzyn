@@ -5,12 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.inzyn.R
 import com.example.inzyn.data.ExerciseRepository
-import com.example.inzyn.data.SetRepository.Companion.GENERATE_ID
 import com.example.inzyn.data.RepositoryLocator
 import com.example.inzyn.data.SetRepository
 import com.example.inzyn.model.Set
 import com.example.inzyn.model.navigation.Destination
 import com.example.inzyn.model.navigation.PopBack
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -29,24 +29,28 @@ class AddSetViewModel : ViewModel() {
     val reps = MutableLiveData<String>()
     val date = MutableLiveData<String>()
     val exerciseName = MutableLiveData<String>()
-    var exerciseIDs = 0
+    var exerciseIDs: String = ""
+    val userId = FirebaseAuth.getInstance().currentUser?.uid
 
-    fun init(id: Int?, exerciseID: Int?) {
-        exerciseIDs = exerciseID?:0
+
+    fun init(id: String?, exerciseID: String?) {
+        exerciseIDs = exerciseID ?: " "
         buttonText.value = R.string.add
         if (id != null) {
             viewModelScope.launch {
                 try {
-                    val set = repository.getSetById(id)
-                    exerciseName.postValue(set.exerciseName)
+                    val set = repository.getSetById(userId.toString(), id)
+                    exerciseName.postValue(set?.exerciseName)
+                    println("Exercise name: $exerciseName")
                     println("found")
                     edited = set
-                    name.postValue(set.exerciseName)
-                    description.postValue(set.description)
-                    weight.postValue(set.weight.toString())
-                    reps.postValue(set.reps.toString())
+                    name.postValue(set?.exerciseName)
+                    description.postValue(set?.description)
+                    weight.postValue(set?.weight.toString())
+                    reps.postValue(set?.reps.toString())
                     date.postValue(LocalDate.now().toString())
                     buttonText.postValue(R.string.save)
+
                 } catch (e: NoSuchElementException) {
                     println("not found")
                     edited = null
@@ -63,8 +67,13 @@ class AddSetViewModel : ViewModel() {
         } else {
             viewModelScope.launch {
                 println("no id")
-                edited = null
-                exerciseName.postValue(exerciseRepository.getExerciseById(exerciseIDs)?.name)
+                exerciseName.postValue(
+                    exerciseRepository.getExerciseById(
+                        userId.toString(),
+                        exerciseIDs
+                    )?.name
+                )
+                println("Exercise name: $exerciseName")
                 description.postValue("")
                 weight.postValue("0.0")
                 reps.postValue("0")
@@ -90,7 +99,7 @@ class AddSetViewModel : ViewModel() {
             reps = reps,
             date = date
         ) ?: Set(
-            id = GENERATE_ID,
+            id = "",
             description = description,
             exerciseID = exerciseID,
             exerciseName = exerciseName,
@@ -100,10 +109,11 @@ class AddSetViewModel : ViewModel() {
         )
 
         viewModelScope.launch {
+            val userId = FirebaseAuth.getInstance().currentUser?.uid ?: throw Exception("")
             if (edited == null) {
-                repository.add(toSave)
+                repository.add(userId, toSave)
             } else {
-                repository.set(toSave)
+                repository.set(userId, toSave)
             }
             withContext(Dispatchers.Main) {
                 navigation.value = PopBack()

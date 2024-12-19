@@ -1,6 +1,7 @@
 package com.example.inzyn
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.Gravity
@@ -17,7 +18,9 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.inzyn.data.RepositoryLocator
+import com.example.inzyn.data.db.GymDb
 import com.example.inzyn.databinding.ActivityMainBinding
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -27,10 +30,12 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    private lateinit var auth: FirebaseAuth
+    private lateinit var gymDb: GymDb
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
@@ -42,7 +47,23 @@ class MainActivity : AppCompatActivity() {
         binding.allstats.setOnClickListener {
             showStatisticsDialog()
         }
+
+        gymDb = GymDb()
+//        gymDb.exerciseWrite()
+//        gymDb.planWrite()
+//        gymDb.writeSets()
+
+
+        auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser
+        if (currentUser == null) {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+            return
+        }
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
@@ -59,13 +80,13 @@ class MainActivity : AppCompatActivity() {
             val favoriteExercise = calculateFavoriteExercise()
 
             val messageTotalSets =
-                String.format(getString(R.string.Total_series) + " " + totalSets )
+                String.format(getString(R.string.Total_series) + " " + totalSets)
             val messageTotalVolume =
-                String.format(getString(R.string.total_training_volume) + " " +totalVolume  + " " + "kg")
+                String.format(getString(R.string.total_training_volume) + " " + totalVolume + " " + "kg")
             val messageAvgVolume =
-                String.format(getString(R.string.avg_exercise_volume) + " " + averageVolume  + " " + "kg")
+                String.format(getString(R.string.avg_exercise_volume) + " " + averageVolume + " " + "kg")
             val messageFavouriteExercise =
-                String.format(getString(R.string.fav_exercise) + " " + favoriteExercise )
+                String.format(getString(R.string.fav_exercise) + " " + favoriteExercise)
 
 //            val statisticsMessage = """
 //                Łączna ilość wykonanych serii: $totalSets
@@ -77,10 +98,12 @@ class MainActivity : AppCompatActivity() {
             withContext(Dispatchers.Main) {
                 AlertDialog.Builder(this@MainActivity)
                     .setTitle(String.format(getString(R.string.Exercise_stats)))
-                    .setMessage(messageTotalSets + "\n" +
-                            messageTotalVolume + "\n" +
-                            messageAvgVolume + "\n" +
-                            messageFavouriteExercise)
+                    .setMessage(
+                        messageTotalSets + "\n" +
+                                messageTotalVolume + "\n" +
+                                messageAvgVolume + "\n" +
+                                messageFavouriteExercise
+                    )
                     .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
                     .show()
             }
@@ -88,32 +111,41 @@ class MainActivity : AppCompatActivity() {
     }
 
     private suspend fun calculateTotalSets(): Int = withContext(Dispatchers.IO) {
-        val allSets = RepositoryLocator.setRepository.getSetList()
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: throw Exception("")
+        val allSets = RepositoryLocator.setRepository.getSetList(userId)
         allSets.size
     }
 
     private suspend fun calculateTotalVolume(): Double = withContext(Dispatchers.IO) {
-        val allSets = RepositoryLocator.setRepository.getSetList()
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: throw Exception("")
+        val allSets = RepositoryLocator.setRepository.getSetList(userId)
         allSets.sumOf { it.weight * it.reps }
     }
 
     private suspend fun calculateAverageVolume(): String = withContext(Dispatchers.IO) {
-        val allSets = RepositoryLocator.setRepository.getSetList()
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: throw Exception("")
+        val allSets = RepositoryLocator.setRepository.getSetList(userId)
         if (allSets.isNotEmpty()) {
             val average = allSets.sumOf { it.weight * it.reps } / allSets.size
-            String.format("%.2f", average) // Zaokrąglenie do dwóch miejsc po przecinku i konwersja do Double
+            String.format(
+                "%.2f",
+                average
+            ) // Zaokrąglenie do dwóch miejsc po przecinku i konwersja do Double
         } else {
             "0.0"
         }
     }
 
     private suspend fun calculateFavoriteExercise(): String = withContext(Dispatchers.IO) {
-        val allSets = RepositoryLocator.setRepository.getSetList()
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: throw Exception("")
+        val allSets = RepositoryLocator.setRepository.getSetList(userId)
         val exerciseCounts = allSets.groupingBy { it.exerciseID }.eachCount()
         val favoriteExerciseId = exerciseCounts.maxByOrNull { it.value }?.key
-
         if (favoriteExerciseId != null) {
-            val exercise = RepositoryLocator.exerciseRepository.getExerciseById(favoriteExerciseId)
+            val exercise = RepositoryLocator.exerciseRepository.getExerciseById(
+                userId,
+                favoriteExerciseId.toString()
+            )
             exercise?.name ?: String.format(getString(R.string.exercise_deleted_from_db))
         } else {
             String.format(getString(R.string.no_data))
@@ -126,12 +158,19 @@ class MainActivity : AppCompatActivity() {
                 languageMenu()
                 true
             }
+
             R.id.reset_database -> {
-                resetDatabase("gym")
+                resetDatabase()
                 true
             }
+
             R.id.change_theme -> {
                 themeMenu()
+                true
+            }
+
+            R.id.Log_out -> {
+                logout()
                 true
             }
 
@@ -149,10 +188,12 @@ class MainActivity : AppCompatActivity() {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                     true
                 }
+
                 R.id.Light -> {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                     true
                 }
+
                 else -> false
             }
         }
@@ -170,18 +211,22 @@ class MainActivity : AppCompatActivity() {
                     changeLanguage("pl")
                     true
                 }
+
                 R.id.German -> {
                     changeLanguage("de")
                     true
                 }
+
                 R.id.Spanish -> {
                     changeLanguage("es")
                     true
                 }
+
                 R.id.English -> {
                     changeLanguage("en")
                     true
                 }
+
                 else -> false
             }
         }
@@ -201,11 +246,18 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, "Language changed to ${locale.displayName}", Toast.LENGTH_SHORT).show()
     }
 
-    private fun resetDatabase(dbName: String) {
-        val dbFile = File(applicationContext.getDatabasePath(dbName).absolutePath)
-        if (dbFile.exists()) {
-            dbFile.delete()
-        }
+    private fun resetDatabase() {
+       gymDb.planWrite()
+       gymDb.exerciseWrite()
+
+    }
+
+    private fun logout() {
+        auth.signOut()
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish()
+
     }
 
     override fun onSupportNavigateUp(): Boolean {

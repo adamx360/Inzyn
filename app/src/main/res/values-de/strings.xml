@@ -67,4 +67,7 @@
     <string name="delete_item">" Artikel löschen"</string>
     <string name="sure_to_delete_series">" Sind Sie sicher, dass Sie die Serie löschen möchten"</string>
     <string name="timer_finished">" Timer beendet"</string>
+    <string name="Password">Passwort</string>
+    <string name="Login">Einloggen</string>
+    <string name="Email">"E-Mail "</string>
 </resources>

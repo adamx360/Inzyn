@@ -67,4 +67,7 @@
     <string name="delete_item">"Eliminar elemento "</string>
     <string name="sure_to_delete_series">¿Estás seguro de que quieres eliminar la serie?</string>
     <string name="timer_finished">" Temporizador terminado"</string>
+    <string name="Password">Contraseña</string>
+    <string name="Login">Acceso</string>
+    <string name="Email">Correo electrónico</string>
 </resources>

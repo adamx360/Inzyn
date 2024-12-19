@@ -102,7 +102,7 @@ class AddPlanFragment : Fragment() {
 
     private fun navigateToAddSetFragment(exercise: Exercise) {
         val bundle = Bundle().apply {
-            putInt("exerciseID", exercise.id)
+            putString("exerciseID", exercise.id)
         }
         findNavController().navigate(R.id.action_addPlanFragment_to_addSetFragment, bundle)
     }

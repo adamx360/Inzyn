@@ -7,5 +7,5 @@ sealed class AddExerciseType : Serializable {
         private fun readResolve(): Any = New
     }
 
-    data class Edit(val id: Int) : AddExerciseType()
+    data class Edit(val id: String) : AddExerciseType()
 }

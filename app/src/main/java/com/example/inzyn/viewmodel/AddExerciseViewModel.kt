@@ -5,11 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.inzyn.R
 import com.example.inzyn.data.ExerciseRepository
-import com.example.inzyn.data.ExerciseRepository.Companion.GENERATE_ID
 import com.example.inzyn.data.RepositoryLocator
 import com.example.inzyn.model.Exercise
 import com.example.inzyn.model.navigation.Destination
 import com.example.inzyn.model.navigation.PopBack
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -27,12 +27,13 @@ class AddExerciseViewModel : ViewModel() {
     val navigation = MutableLiveData<Destination>()
     val description = MutableLiveData("")
 
-    fun init(id: Int?) {
+    fun init(id: String?) {
         buttonText.value = R.string.add
         if (id != null) {
             viewModelScope.launch {
                 try {
-                    val exercise = repository.getExerciseById(id)
+                    val userId = FirebaseAuth.getInstance().currentUser?.uid
+                    val exercise = repository.getExerciseById(userId.toString(), id)
                     println("found")
                     edited = exercise
                     name.postValue(exercise?.name)
@@ -62,22 +63,24 @@ class AddExerciseViewModel : ViewModel() {
             name = name,
             description = description
         ) ?: Exercise(
-            id = GENERATE_ID,
+            id = "",
             name = name,
             description = description
         )
 
         viewModelScope.launch {
+            val userId = FirebaseAuth.getInstance().currentUser?.uid ?: throw Exception("")
             if (edited == null) {
-                repository.add(toSave)
+                repository.add(userId, toSave)
             } else {
-                repository.set(toSave)
+                repository.set(userId, toSave)
             }
             withContext(Dispatchers.Main) {
                 navigation.value = PopBack()
             }
         }
     }
+
 
     private fun parseDate(dateString: String): Calendar {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())

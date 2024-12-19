@@ -1,11 +1,11 @@
 package com.example.inzyn.model
 
 data class Set(
-    val id: Int,
-    val exerciseID: Int,
-    val exerciseName: String,
-    val weight: Double,
-    val reps: Int,
-    val date: String,
-    val description: String?,
+    var id: String = "",
+    var exerciseID: String = "",
+    var exerciseName: String = "",
+    var weight: Double = 0.0,
+    var reps: Int = 0,
+    var date: String = "",
+    var description: String? = "",
 )

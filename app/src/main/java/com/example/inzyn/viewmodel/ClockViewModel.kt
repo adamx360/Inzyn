@@ -23,7 +23,7 @@ class ClockViewModel : ViewModel() {
     private val _isRunning = MutableLiveData<Boolean>()
     val isRunning: LiveData<Boolean> get() = _isRunning
 
-    private var time:Long =  0L
+    private var time: Long = 0L
     private var starterTime: Long = 0L
     private lateinit var mediaPlayer: MediaPlayer
 
@@ -31,14 +31,14 @@ class ClockViewModel : ViewModel() {
         viewModelScope.launch {
             withContext(Dispatchers.Main) {
                 _isRunning.postValue(false)
-                _remainingTime.postValue( "00:00")
+                _remainingTime.postValue("00:00")
             }
         }
     }
 
-    fun startTimer(interval: Long = 1000L){
+    fun startTimer(interval: Long = 1000L) {
         stopTimer()
-        countDownTimer = object : CountDownTimer(time,interval){
+        countDownTimer = object : CountDownTimer(time, interval) {
             override fun onTick(millisUntilFinished: Long) {
                 time = millisUntilFinished
                 updateTimeDisplay(time)
@@ -51,36 +51,36 @@ class ClockViewModel : ViewModel() {
         }.start()
     }
 
-    fun updateTimeDisplay(millis: Long){
+    fun updateTimeDisplay(millis: Long) {
         val f = DecimalFormat("00")
         val min = (millis / 60000) % 60
         val sec = (millis / 1000) % 60
         _remainingTime.postValue("${f.format(min)}:${f.format(sec)}")
     }
 
-    fun stopTimer(){
+    fun stopTimer() {
         countDownTimer?.cancel()
     }
 
-    fun addTime(seconds: Long){
-        time += seconds*1000
+    fun addTime(seconds: Long) {
+        time += seconds * 1000
         updateTimeDisplay(time)
     }
 
-    fun subtractTime(seconds: Long){
-        time = (time - seconds*1000).coerceAtLeast(0)
+    fun subtractTime(seconds: Long) {
+        time = (time - seconds * 1000).coerceAtLeast(0)
         updateTimeDisplay(time)
     }
 
-    fun resetTimer(){
+    fun resetTimer() {
         stopTimer()
         time = starterTime
         updateTimeDisplay(time)
         _isRunning.postValue(false)
     }
 
-    fun playSound(context: Context){
-        mediaPlayer = MediaPlayer.create(context,R.raw.timer)
+    fun playSound(context: Context) {
+        mediaPlayer = MediaPlayer.create(context, R.raw.timer)
         mediaPlayer.start()
         mediaPlayer.setOnCompletionListener {
             it.release()

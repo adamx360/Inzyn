@@ -4,15 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.inzyn.R
 import com.example.inzyn.adapters.PlanListAdapter
 import com.example.inzyn.databinding.FragmentPlanBinding
-import com.example.inzyn.model.Plan
 import com.example.inzyn.viewmodel.PlanViewModel
 
 class PlanFragment : Fragment() {
@@ -35,7 +32,8 @@ class PlanFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         planListAdapter = PlanListAdapter(
-            onItemClick = { position -> viewModel.onEditPlan(planListAdapter.planList[position])
+            onItemClick = { position ->
+                viewModel.onEditPlan(planListAdapter.planList[position])
             }
         )
 

@@ -13,9 +13,16 @@ class ExerciseItem(
     var id: Int = 0
         private set
 
-    fun onBind(exerciseItem: Exercise, onItemClick: () -> Unit, onItemLongClick: () -> Unit, addSet: () -> Unit, stats: () -> Unit) {
+    fun onBind(
+        exerciseItem: Exercise,
+        onItemClick: () -> Unit,
+        onItemLongClick: () -> Unit,
+        addSet: () -> Unit,
+        stats: () -> Unit
+    ) {
         with(binding) {
-            id = exerciseItem.id
+            val intId = exerciseItem.id.toIntOrNull() ?: 0
+            id = intId
             name.text = exerciseItem.name
             root.setOnClickListener {
                 onItemClick()
@@ -34,12 +41,12 @@ class ExerciseItem(
     }
 }
 
-class ExerciseListAdapter (
+class ExerciseListAdapter(
     private val onItemClick: (Int) -> Unit,
     private val onItemLongClick: (Int) -> Unit,
     private val addSet: (Int) -> Unit,
     private val stats: (Int) -> Unit
-) : RecyclerView.Adapter<ExerciseItem>(){
+) : RecyclerView.Adapter<ExerciseItem>() {
     var exerciseList: List<Exercise> = emptyList()
         set(value) {
             val diffs = DiffUtil.calculateDiff(ExerciseDiffCallback(field, value))

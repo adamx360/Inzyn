@@ -1,7 +1,11 @@
 package com.example.inzyn.model
 
+import com.google.firebase.database.IgnoreExtraProperties
+
+
+
 data class Exercise(
-    val id: Int,
-    val name: String,
-    val description: String?,
+    var id: String = "",
+    var name: String = "",
+    var description: String = "",
 )

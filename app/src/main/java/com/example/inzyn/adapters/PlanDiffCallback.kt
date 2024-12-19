@@ -3,7 +3,7 @@ package com.example.inzyn.adapters
 import androidx.recyclerview.widget.DiffUtil
 import com.example.inzyn.model.Plan
 
-class PlanDiffCallback (
+class PlanDiffCallback(
     private val old: List<Plan>,
     private val new: List<Plan>
 ) : DiffUtil.Callback() {

@@ -9,9 +9,9 @@ import androidx.navigation.NavDestination
 import com.example.inzyn.R
 import com.example.inzyn.data.RepositoryLocator
 import com.example.inzyn.model.Plan
-import com.example.inzyn.model.navigation.AddPlan
 import com.example.inzyn.model.navigation.Destination
 import com.example.inzyn.model.navigation.EditPlan
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -26,41 +26,22 @@ class PlanViewModel : ViewModel() {
 
     private fun loadPlans() {
         viewModelScope.launch(Dispatchers.IO) {
-            plans.postValue(repository.getPlanList())
-            repository.getPlanList()
+            val userId = FirebaseAuth.getInstance().currentUser?.uid
+            plans.postValue(repository.getPlanList(userId.toString()))
+            repository.getPlanList(userId.toString())
         }
-    }
-
-    fun insertPlan(plan: Plan) {
-        viewModelScope.launch {
-            repository.add(plan)
-            loadPlans()
-        }
-    }
-
-    fun updatePlan(plan: Plan) {
-        viewModelScope.launch {
-            repository.set(plan)
-            loadPlans()
-        }
-    }
-
-    fun onAddPlan() {
-        navigation.value = AddPlan()
     }
 
     fun onEditPlan(plan: Plan) {
         navigation.value = EditPlan(plan)
     }
 
-    fun onPlanRemove(id: Int) {
-        viewModelScope.launch {
-            repository.removeById(id)
-            loadPlans()
-        }
-    }
 
-    fun onDestinationChange(controller: NavController, destination: NavDestination, arguments: Bundle?) {
+    fun onDestinationChange(
+        controller: NavController,
+        destination: NavDestination,
+        arguments: Bundle?
+    ) {
         if (destination.id == R.id.planFragment) {
             this.loadPlans()
         }

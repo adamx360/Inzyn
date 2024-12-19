@@ -67,4 +67,7 @@
     <string name="delete_item">Usuń przedmiot</string>
     <string name="sure_to_delete_series">Czy napewno chcesz usunąć serie</string>
     <string name="timer_finished">Odliczanie zegara zakończone</string>
+    <string name="Password">Hasło</string>
+    <string name="Login">Zaloguj się</string>
+    <string name="Email">Email</string>
 </resources>

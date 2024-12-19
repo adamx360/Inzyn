@@ -1,11 +1,11 @@
 package com.example.inzyn.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,7 +39,8 @@ class CalendarFragment : Fragment() {
         }
 
         setListAdapter = SetListAdapter(
-            onItemClick = { position -> viewModel.onEditSet(setListAdapter.setList[position])
+            onItemClick = { position ->
+                viewModel.onEditSet(setListAdapter.setList[position])
             },
             onItemLongClick = { position ->
                 val selectedSet: Set = setListAdapter.setList[position]
@@ -76,6 +77,7 @@ class CalendarFragment : Fragment() {
             viewModel.onDateSelected(selectedDate)
         }
     }
+
     override fun onStart() {
         super.onStart()
         findNavController().addOnDestinationChangedListener(viewModel::onDestinationChange)

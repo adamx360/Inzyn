@@ -15,7 +15,7 @@ class PlanItem(
 
     fun onBind(planItem: Plan, onItemClick: () -> Unit) {
         with(binding) {
-            id = planItem.id
+            id = planItem.id.toIntOrNull() ?: 0
             planName.text = planItem.name
             root.setOnClickListener {
                 onItemClick()
@@ -24,9 +24,9 @@ class PlanItem(
     }
 }
 
-class PlanListAdapter (
+class PlanListAdapter(
     private val onItemClick: (Int) -> Unit
-) : RecyclerView.Adapter<PlanItem>(){
+) : RecyclerView.Adapter<PlanItem>() {
     var planList: List<Plan> = emptyList()
         set(value) {
             val diffs = DiffUtil.calculateDiff(PlanDiffCallback(field, value))

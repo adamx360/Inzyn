@@ -19,7 +19,7 @@ class AddSetFragment : Fragment() {
     private lateinit var binding: FragmentAddSetBinding
     private val viewModel: AddSetViewModel by viewModels()
     private lateinit var type: AddSetType
-    private var exerciseId: Int? = null
+    private var exerciseId: String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +31,7 @@ class AddSetFragment : Fragment() {
                 @Suppress("DEPRECATION")
                 it.getSerializable(TYPE_KEY) as? AddSetType
             } ?: AddSetType.New
-            exerciseId = it.getInt("exerciseID")
+            exerciseId = it.getString("exerciseID")
         }
     }
 

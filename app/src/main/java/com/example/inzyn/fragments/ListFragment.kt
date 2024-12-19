@@ -1,11 +1,11 @@
 package com.example.inzyn.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.inzyn.R
 import com.example.inzyn.adapters.ExerciseListAdapter
 import com.example.inzyn.databinding.FragmentListBinding
-import com.example.inzyn.viewmodel.ListViewModel
 import com.example.inzyn.model.Exercise
+import com.example.inzyn.viewmodel.ListViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -39,13 +39,14 @@ class ListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         exerciseListAdapter = ExerciseListAdapter(
-            onItemClick = { position -> viewModel.onEditExercise(exerciseListAdapter.exerciseList[position])
+            onItemClick = { position ->
+                viewModel.onEditExercise(exerciseListAdapter.exerciseList[position])
             },
             onItemLongClick = { position ->
                 val selectedExercise: Exercise = exerciseListAdapter.exerciseList[position]
                 AlertDialog.Builder(requireContext())
                     .setTitle(String.format(getString(R.string.edit_exercise)))
-                    .setMessage(String.format(getString(R.string.add_to_plan_or_delete))+ " " + selectedExercise.name  + "?" )
+                    .setMessage(String.format(getString(R.string.add_to_plan_or_delete)) + " " + selectedExercise.name + "?")
                     .setPositiveButton(String.format(getString(R.string.Add))) { dialog, _ ->
                         showDaySelectionDialog(selectedExercise.id)
                         dialog.dismiss()
@@ -114,12 +115,12 @@ class ListFragment : Fragment() {
 
             val messageStats =
                 String.format(getString(R.string.Stats_for_exercise) + " " + exercise.name)
-            val messageTotalSets=
+            val messageTotalSets =
                 String.format(getString(R.string.Total_sets) + " " + totalSets)
-            val messageSetsTotalVolume=
+            val messageSetsTotalVolume =
                 String.format(getString(R.string.Total_vol) + " " + totalVolume)
-            val messageAvgVolume=
-                String.format(getString(R.string.Avg_vol) + " "  + averageVolume)
+            val messageAvgVolume =
+                String.format(getString(R.string.Avg_vol) + " " + averageVolume)
 
 
 //            val statisticsMessage = """
@@ -145,7 +146,17 @@ class ListFragment : Fragment() {
         }
     }
 
-    private fun showDaySelectionDialog(exerciseId: Int) {
+    private val dayPlansIds = arrayOf(
+        "-OEQFZSZ9Ieeunww_ELN",
+        "-OEQFZSd0stc0YO1UX0Y",
+        "-OEQFZSd0stc0YO1UX0Z",
+        "-OEQFZSd0stc0YO1UX0_",
+        "-OEQFZSd0stc0YO1UX0a",
+        "-OEQFZSe_9Pwi3vcvlO9",
+        "-OEQFZSfhuVOQX_gTl-a"
+    )
+
+    private fun showDaySelectionDialog(exerciseId: String) {
         AlertDialog.Builder(requireContext())
             .setTitle(String.format(getString(R.string.Add_to_plan)))
             .setItems(
@@ -158,9 +169,9 @@ class ListFragment : Fragment() {
                     String.format(getString(R.string.Saturday)),
                     String.format(getString(R.string.Sunday))
                 )
-
             ) { dialog, which ->
-                val planDayId = which + 1
+//                val planDayId = which + 1
+                val planDayId = dayPlansIds[which]
                 viewModel.addExerciseToPlan(exerciseId, planDayId)
                 dialog.dismiss()
             }
@@ -172,7 +183,7 @@ class ListFragment : Fragment() {
 
     private fun navigateToAddSetFragment(exercise: Exercise) {
         val bundle = Bundle().apply {
-            putInt("exerciseID", exercise.id)
+            putString("exerciseID", exercise.id)
         }
         findNavController().navigate(R.id.action_listFragment_to_addSetFragment, bundle)
     }

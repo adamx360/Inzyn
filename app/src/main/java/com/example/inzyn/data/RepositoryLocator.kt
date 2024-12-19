@@ -1,20 +1,17 @@
 package com.example.inzyn.data
 
 import android.content.Context
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.CoroutineScope
 
 object RepositoryLocator {
-    lateinit var exerciseRepository: ExerciseRepository
-        private set
-    lateinit var planRepository: PlanRepository
-        private set
-    lateinit var setRepository: SetRepository
-        private set
-
-
-    fun init(context: Context, scope: CoroutineScope){
-        exerciseRepository = ExerciseRepositoryInFile(context, scope)
-        planRepository = PlanRepositoryInFile(context, scope)
-        setRepository = SetRepositoryInFile(context, scope)
+    val exerciseRepository: ExerciseRepository by lazy {
+        ExerciseRepository()
+    }
+    val planRepository: PlanRepository by lazy {
+        PlanRepository()
+    }
+    val setRepository: SetRepository by lazy {
+        SetRepository()
     }
 }

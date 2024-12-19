@@ -7,5 +7,5 @@ sealed class AddPlanType : Serializable {
         private fun readResolve(): Any = New
     }
 
-    data class Edit(val id: Int) : AddPlanType()
+    data class Edit(val id: String) : AddPlanType()
 }

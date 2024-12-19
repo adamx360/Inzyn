@@ -14,9 +14,11 @@ class SetItem(
         private set
     var date: String = ""
         private set
+
     fun onBind(setItem: Set, onItemClick: () -> Unit, onItemLongClick: () -> Unit) {
         with(binding) {
-            id = setItem.id
+            val intId = setItem.id.toIntOrNull() ?: 0
+            id = intId
             exerciseName.text = setItem.exerciseName
             weight.text = setItem.weight.toString()
             reps.text = setItem.reps.toString()
@@ -33,10 +35,10 @@ class SetItem(
     }
 }
 
-class SetListAdapter (
+class SetListAdapter(
     private val onItemClick: (Int) -> Unit,
     private val onItemLongClick: (Int) -> Unit
-) : RecyclerView.Adapter<SetItem>(){
+) : RecyclerView.Adapter<SetItem>() {
     var setList: List<Set> = emptyList()
         set(value) {
             val diffs = DiffUtil.calculateDiff(SetDiffCallback(field, value))

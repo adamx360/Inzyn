@@ -1,6 +1,5 @@
 package com.example.inzyn.fragments
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -46,7 +45,11 @@ class TodayPlanFragment : Fragment() {
                 val selectedExercise: Exercise = exerciseListAdapter.exerciseList[position]
                 AlertDialog.Builder(requireContext())
                     .setTitle(String.format(getString(R.string.delete_exercise)))
-                    .setMessage(String.format(getString(R.string.do_you_want_to_delete)) + " "+ selectedExercise.name + String.format(getString(R.string.from_plan))+ " ?")
+                    .setMessage(
+                        String.format(getString(R.string.do_you_want_to_delete)) + " " + selectedExercise.name + String.format(
+                            getString(R.string.from_plan)
+                        ) + " ?"
+                    )
                     .setNegativeButton(String.format(getString(R.string.Delete))) { dialog, _ ->
                         viewModel.removeExerciseFromPlan(selectedExercise.id)
                         dialog.dismiss()
@@ -82,7 +85,7 @@ class TodayPlanFragment : Fragment() {
 
     private fun navigateToAddSetFragment(exercise: Exercise) {
         val bundle = Bundle().apply {
-            putInt("exerciseID", exercise.id)
+            putString("exerciseID", exercise.id)
         }
         findNavController().navigate(R.id.action_todayPlanFragment_to_addSetFragment, bundle)
     }
