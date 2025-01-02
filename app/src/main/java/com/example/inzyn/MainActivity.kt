@@ -20,7 +20,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.inzyn.data.RepositoryLocator
 import com.example.inzyn.data.db.GymDb
 import com.example.inzyn.databinding.ActivityMainBinding
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.database
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -40,6 +42,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
 
+
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -47,6 +50,7 @@ class MainActivity : AppCompatActivity() {
         binding.allstats.setOnClickListener {
             showStatisticsDialog()
         }
+
 
         gymDb = GymDb()
 //        gymDb.exerciseWrite()
@@ -159,8 +163,8 @@ class MainActivity : AppCompatActivity() {
                 true
             }
 
-            R.id.reset_database -> {
-                resetDatabase()
+            R.id.sample_data -> {
+                sampleData()
                 true
             }
 
@@ -246,7 +250,7 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, "Language changed to ${locale.displayName}", Toast.LENGTH_SHORT).show()
     }
 
-    private fun resetDatabase() {
+    private fun sampleData() {
        gymDb.planWrite()
        gymDb.exerciseWrite()
 

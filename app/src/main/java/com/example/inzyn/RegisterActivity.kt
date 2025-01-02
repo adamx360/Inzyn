@@ -51,13 +51,12 @@ class RegisterActivity : AppCompatActivity() {
                 .show()
         }
 
-
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this) {
             if (it.isSuccessful) {
                 Toast.makeText(this, "Register completed", Toast.LENGTH_SHORT).show()
 
-                fun writeNewUser(userId: String, email: String, password: String) {
-                    val user = User(userId, email, password)
+                fun writeNewUser(userId: String, email: String) {
+                    val user = User(userId, email)
 
                     database.child("users").child(userId).setValue(user)
 
@@ -65,7 +64,7 @@ class RegisterActivity : AppCompatActivity() {
                 val uid = auth.currentUser?.uid
 
 
-                writeNewUser(uid.toString(), email, password)
+                writeNewUser(uid.toString(), email)
 
 
 

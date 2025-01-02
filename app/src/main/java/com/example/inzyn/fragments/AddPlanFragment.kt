@@ -13,10 +13,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.inzyn.R
 import com.example.inzyn.adapters.ExerciseListAdapter
+import com.example.inzyn.adapters.PlanListAdapter
+import com.example.inzyn.data.PlanRepository
+import com.example.inzyn.data.RepositoryLocator
 import com.example.inzyn.databinding.FragmentAddPlanBinding
 import com.example.inzyn.model.AddPlanType
 import com.example.inzyn.model.Exercise
+import com.example.inzyn.model.Plan
 import com.example.inzyn.viewmodel.AddPlanViewModel
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 
 private const val TYPE_KEY = "type"
 
@@ -25,6 +31,9 @@ class AddPlanFragment : Fragment() {
     private val viewModel: AddPlanViewModel by viewModels()
     private lateinit var type: AddPlanType
     private lateinit var exerciseListAdapter: ExerciseListAdapter
+    private val planRepository: PlanRepository = RepositoryLocator.planRepository
+    private lateinit var planListAdapter: PlanListAdapter
+    private var currentPlanId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,15 +66,22 @@ class AddPlanFragment : Fragment() {
             }
         }
 
+        viewModel.planId.observe(viewLifecycleOwner){id ->
+            currentPlanId = id
+        }
+
+        val planId = "1"
         exerciseListAdapter = ExerciseListAdapter(
             onItemClick = {},
             onItemLongClick = { position ->
                 val selectedExercise: Exercise = exerciseListAdapter.exerciseList[position]
+                val userId = FirebaseAuth.getInstance().currentUser?.uid
                 AlertDialog.Builder(requireContext())
                     .setTitle(String.format(getString(R.string.delete_exercise)))
                     .setMessage(String.format(getString(R.string.do_you_want_to_delete)) + " " + selectedExercise.name + " " + String.format(getString(R.string.from_plan)) )
                     .setNegativeButton(String.format(getString(R.string.Delete))) { dialog, _ ->
-                        viewModel.removeExerciseFromPlan(selectedExercise.id)
+                        viewModel.removeExerciseFromPlan(userId.toString(),
+                            currentPlanId.toString(),selectedExercise.id)
                         dialog.dismiss()
                     }
                     .setNeutralButton(String.format(getString(R.string.Cancel))) { dialog, _ ->
@@ -106,6 +122,7 @@ class AddPlanFragment : Fragment() {
         }
         findNavController().navigate(R.id.action_addPlanFragment_to_addSetFragment, bundle)
     }
+
 
     override fun onStart() {
         super.onStart()

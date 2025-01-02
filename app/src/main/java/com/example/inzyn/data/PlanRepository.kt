@@ -9,8 +9,9 @@ class PlanRepository {
     private val database: DatabaseReference = FirebaseDatabase.getInstance().reference
 
     suspend fun getPlanList(userId: String): List<Plan> {
+        val sanitizedUserId = sanitizeFirebaseKey(userId)
         return try {
-            val snapshot = database.child("users").child(userId).child("plans").get().await()
+            val snapshot = database.child("users").child(sanitizedUserId).child("plans").get().await()
             if (snapshot.exists()) {
                 snapshot.children.mapNotNull { planSnapshot ->
                     planSnapshot.getValue(Plan::class.java)
@@ -31,7 +32,6 @@ class PlanRepository {
         }
         val planWithId = plan.copy(id = planId)
         database.child("users").child(sanitizedUserId).child("plans").setValue(planWithId).await()
-
 
     }
 

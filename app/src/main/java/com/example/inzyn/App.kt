@@ -1,12 +1,14 @@
 package com.example.inzyn
 
 import android.app.Application
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.Firebase
+import com.google.firebase.database.database
 
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true)
+
+        Firebase.database.setPersistenceEnabled(true)
     }
 
 }

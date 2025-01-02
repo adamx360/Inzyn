@@ -146,15 +146,6 @@ class ListFragment : Fragment() {
         }
     }
 
-    private val dayPlansIds = arrayOf(
-        "-OEQFZSZ9Ieeunww_ELN",
-        "-OEQFZSd0stc0YO1UX0Y",
-        "-OEQFZSd0stc0YO1UX0Z",
-        "-OEQFZSd0stc0YO1UX0_",
-        "-OEQFZSd0stc0YO1UX0a",
-        "-OEQFZSe_9Pwi3vcvlO9",
-        "-OEQFZSfhuVOQX_gTl-a"
-    )
 
     private fun showDaySelectionDialog(exerciseId: String) {
         AlertDialog.Builder(requireContext())
@@ -170,9 +161,8 @@ class ListFragment : Fragment() {
                     String.format(getString(R.string.Sunday))
                 )
             ) { dialog, which ->
-//                val planDayId = which + 1
-                val planDayId = dayPlansIds[which]
-                viewModel.addExerciseToPlan(exerciseId, planDayId)
+                val planDayId = which + 1
+                viewModel.addExerciseToPlan(exerciseId, planDayId.toString())
                 dialog.dismiss()
             }
             .setNegativeButton(String.format(getString(R.string.Cancel))) { dialog, _ ->

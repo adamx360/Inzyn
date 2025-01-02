@@ -2,6 +2,9 @@ package com.example.inzyn.viewmodel
 
 
 import android.os.Bundle
+import android.system.Os.remove
+import androidx.compose.animation.core.updateTransition
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,16 +18,30 @@ import com.example.inzyn.model.Exercise
 import com.example.inzyn.model.Plan
 import com.example.inzyn.model.navigation.Destination
 import com.example.inzyn.model.navigation.PopBack
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.GenericTypeIndicator
+import com.google.firebase.database.MutableData
+import com.google.firebase.database.Transaction
+import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO_PARALLELISM_PROPERTY_NAME
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class AddPlanViewModel : ViewModel() {
     private val repository: PlanRepository = RepositoryLocator.planRepository
     private val exerciseRepository: ExerciseRepository = RepositoryLocator.exerciseRepository
+    private val planRepository: PlanRepository = RepositoryLocator.planRepository
+    val database = FirebaseDatabase.getInstance().reference
     val exercises: MutableLiveData<List<Exercise>> = MutableLiveData(emptyList())
     private var edited: Plan? = null
+    private  val _planId = MutableLiveData<String?>()
+    val planId: LiveData<String?> get() = _planId
 
     val name = MutableLiveData("")
     val exercisesIDs = MutableLiveData<String>()
@@ -33,6 +50,7 @@ class AddPlanViewModel : ViewModel() {
     val description = MutableLiveData("")
 
     fun init(id: String?) {
+        _planId.value = id
         buttonText.value = R.string.add
         if (id != null) {
             viewModelScope.launch {
@@ -75,7 +93,6 @@ class AddPlanViewModel : ViewModel() {
 
     fun onSave() {
         val name = name.value.orEmpty()
-//        val exercisesIDsList = exercisesIDs.value.orEmpty().split(",").mapNotNull { it.trim().toIntOrNull() }
         val exercisesIDsList = exercisesIDs.value.orEmpty().split(",").map { it.trim() }
         val toSave = edited?.copy(
             name = name,
@@ -112,6 +129,7 @@ class AddPlanViewModel : ViewModel() {
                 ?.split(",")?.joinToString(",") { it.trim() }
                 ?: " "
 
+
             // Debug: Sprawdź przekształcone selectedIds
             println("Selected IDs for filtering: $selectedIds")
 
@@ -142,18 +160,23 @@ class AddPlanViewModel : ViewModel() {
         exercisesIDs.removeObserver { loadExercises() }
     }
 
-    fun removeExerciseFromPlan(exerciseId: String) {
-        val currentIds = exercisesIDs.value
-            ?.split(",")
-            ?.map { it.trim() }
-            ?.toMutableList()
-            ?: mutableListOf()
+    fun removeExerciseFromPlan(userId: String, planId: String, exerciseId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val exerciseRef = database.child("users").child(userId).child("plans").child(planId)
+                .child("exercisesIDs")
+            exerciseRef.get().addOnSuccessListener { snapshot ->
+                val currentList =
+                    snapshot.getValue(object : GenericTypeIndicator<List<String>>() {})
+                        ?: emptyList()
+                val updatedList = currentList.toMutableList().apply { remove(exerciseId) }
+                exerciseRef.setValue(updatedList).addOnSuccessListener {
+                    exercisesIDs.postValue(updatedList.joinToString(","))
+                    loadExercises()
+                }
 
-        if (currentIds.contains(exerciseId)) {
-            currentIds.remove(exerciseId)
-            exercisesIDs.postValue(currentIds.joinToString(","))
+                println("List $updatedList")
+            }
+
         }
-        loadExercises()
-
     }
 }

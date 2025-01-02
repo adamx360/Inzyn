@@ -41,17 +41,27 @@ class GymDb {
         Exercise(id = "11", name = "Dips", description = "Description for Dips")
     )
 
-    fun exerciseWrite() {
-        sampleExercises.forEach { exercise ->
-            val newId = database.child("exercises").push().key ?: return@forEach
-            exercise.id = newId
+//    fun exerciseWrite() {
+//        sampleExercises.forEach { exercise ->
+//            val newId = database.child("exercises").push().key ?: return@forEach
+//            exercise.id = newId
+//
+//            database.child("users").child(userId.toString()).child("exercises").child(newId)
+//                .setValue(exercise)
+//        }
+//    }
 
-            database.child("users").child(userId.toString()).child("exercises").child(newId)
+    fun exerciseWrite(){
+        sampleExercises.forEach { exercise->
+            val exerciseId = exercise.id
+
+            database.child("users")
+                .child(userId.toString())
+                .child("exercises")
+                .child(exerciseId)
                 .setValue(exercise)
         }
     }
-
-
     val samplePlans = listOf(
         Plan(
             id = "1",
@@ -79,23 +89,48 @@ class GymDb {
         Plan(id = "7", name = "Rest Day", exercisesIDs = listOf()),
     )
 
+//    fun planWrite() {
+//        samplePlans.forEach { plan ->
+//            val newId = database.child("plans").push().key ?: return@forEach
+//            plan.id = newId
+//
+//            database.child("users").child(userId.toString()).child("plans").child(newId)
+//                .setValue(plan)
+//        }
+//    }
+
     fun planWrite() {
         samplePlans.forEach { plan ->
-            val newId = database.child("plans").push().key ?: return@forEach
-            plan.id = newId
 
-            database.child("users").child(userId.toString()).child("plans").child(newId)
+            val planId = plan.id
+
+            database.child("users")
+                .child(userId.toString())
+                .child("plans")
+                .child(planId)
                 .setValue(plan)
         }
     }
 
-    fun writeSets() {
-        sampleSets.forEach { set ->
-            val newId = database.child("sets").push().key ?: return@forEach
-            set.id = newId
-            database.child("users").child(userId.toString()).child("sets").child(newId)
-                .setValue(set)
-        }
+//    fun writeSets() {
+//        sampleSets.forEach { set ->
+//            val newId = database.child("sets").push().key ?: return@forEach
+//            set.id = newId
+//            database.child("users").child(userId.toString()).child("sets").child(newId)
+//                .setValue(set)
+//        }
+//    }
+    fun writeSets(){
+    samplePlans.forEach { set ->
+
+        val setId = set.id
+
+        database.child("users")
+            .child(userId.toString())
+            .child("sets")
+            .child(setId)
+            .setValue(set)
+    }
     }
 
 

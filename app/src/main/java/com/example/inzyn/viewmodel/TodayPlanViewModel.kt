@@ -14,8 +14,11 @@ import com.example.inzyn.data.RepositoryLocator
 import com.example.inzyn.model.Exercise
 import com.example.inzyn.model.navigation.Destination
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import java.lang.reflect.InvocationTargetException
 import java.time.LocalDateTime
 
 class TodayPlanViewModel : ViewModel() {
@@ -28,17 +31,23 @@ class TodayPlanViewModel : ViewModel() {
     val buttonText = MutableLiveData<Int>()
     val navigation = MutableLiveData<Destination>()
     val description = MutableLiveData("")
-    val id: String = findTodaysID()
+    val id: Int = findTodaysID()
     val userId = FirebaseAuth.getInstance().currentUser?.uid
+    val database = FirebaseDatabase.getInstance().reference
 
-    private fun findTodaysID(): String {
-        return LocalDateTime.now().dayOfWeek.value.toString()
+
+    private fun findTodaysID(): Int {
+
+        return LocalDateTime.now().dayOfWeek.value
+
     }
+
+
 
     fun init() {
         viewModelScope.launch {
             try {
-                val plan = repository.getPlanById(userId.toString(), id)
+                val plan = repository.getPlanById(userId.toString(), id.toString())
                 println("found")
                 name.postValue(plan?.name)
                 buttonText.postValue(R.string.save)
@@ -106,16 +115,21 @@ class TodayPlanViewModel : ViewModel() {
     }
 
     fun removeExerciseFromPlan(exerciseId: String) {
-        val currentIds = exercisesIDs.value
-            ?.split(",")
-            ?.map { it.trim() }
-            ?.toMutableList()
-            ?: mutableListOf()
+        viewModelScope.launch(Dispatchers.IO) {
+            val currentIds = exercisesIDs.value
+                ?.split(",")
+                ?.map { it.trim() }
+                ?.toMutableList()
+                ?: mutableListOf()
 
-        if (currentIds.contains(exerciseId)) {
-            currentIds.remove(exerciseId)
-            exercisesIDs.postValue(currentIds.joinToString(","))
+            if (currentIds.contains(exerciseId)) {
+                currentIds.remove(exerciseId)
+                exercisesIDs.postValue(currentIds.joinToString(","))
+            }
+            println("Exercise deleted $exerciseId ")
+
+            loadExercises()
+
         }
-        loadExercises()
     }
 }
