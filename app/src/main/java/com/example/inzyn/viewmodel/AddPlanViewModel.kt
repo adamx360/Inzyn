@@ -2,8 +2,6 @@ package com.example.inzyn.viewmodel
 
 
 import android.os.Bundle
-import android.system.Os.remove
-import androidx.compose.animation.core.updateTransition
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,36 +16,29 @@ import com.example.inzyn.model.Exercise
 import com.example.inzyn.model.Plan
 import com.example.inzyn.model.navigation.Destination
 import com.example.inzyn.model.navigation.PopBack
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.GenericTypeIndicator
-import com.google.firebase.database.MutableData
-import com.google.firebase.database.Transaction
-import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO_PARALLELISM_PROPERTY_NAME
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class AddPlanViewModel : ViewModel() {
     private val repository: PlanRepository = RepositoryLocator.planRepository
     private val exerciseRepository: ExerciseRepository = RepositoryLocator.exerciseRepository
-    private val planRepository: PlanRepository = RepositoryLocator.planRepository
-    val database = FirebaseDatabase.getInstance().reference
+    private val database: DatabaseReference = FirebaseDatabase.getInstance().reference
     val exercises: MutableLiveData<List<Exercise>> = MutableLiveData(emptyList())
     private var edited: Plan? = null
     private  val _planId = MutableLiveData<String?>()
     val planId: LiveData<String?> get() = _planId
-
+    val userId = FirebaseAuth.getInstance().currentUser?.uid
     val name = MutableLiveData("")
     val exercisesIDs = MutableLiveData<String>()
     val buttonText = MutableLiveData<Int>()
     val navigation = MutableLiveData<Destination>()
     val description = MutableLiveData("")
+
 
     fun init(id: String?) {
         _planId.value = id
@@ -55,15 +46,16 @@ class AddPlanViewModel : ViewModel() {
         if (id != null) {
             viewModelScope.launch {
                 try {
+                    database.child("users").child(userId.toString()).child("plans").child(id.toString()).child("exercisesIDs").keepSynced(true)
                     val userId = FirebaseAuth.getInstance().currentUser?.uid
                     val plan = repository.getPlanById(userId.toString(), id)
+
                     println("found")
                     edited = plan
                     name.postValue(plan?.name)
                     buttonText.postValue(R.string.save)
                     println(plan?.exercisesIDs?.plus(" exercisesIDs found1"))
                     exercisesIDs.postValue(plan?.exercisesIDs.toString())
-
                     // Dodaj obserwatora dla exercisesIDs
                     exercisesIDs.observeForever { ids ->
                         if (!ids.isNullOrEmpty()) {
@@ -119,7 +111,7 @@ class AddPlanViewModel : ViewModel() {
     private fun loadExercises() {
         viewModelScope.launch(Dispatchers.IO) {
             val userId = FirebaseAuth.getInstance().currentUser?.uid
-            val allExercises = exerciseRepository.getExerciseList(userId.toString())
+            val allExercises = exerciseRepository.getExerciseList(userId.toString(), database)
 
             // Debug: Sprawdź exercisesIDs przed filtrowaniem
             println("exercisesIDs before filtering: ${exercisesIDs.value}")
@@ -143,7 +135,6 @@ class AddPlanViewModel : ViewModel() {
             exercises.postValue(filteredExercises)
         }
     }
-
 
     fun onDestinationChange(
         controller: NavController,

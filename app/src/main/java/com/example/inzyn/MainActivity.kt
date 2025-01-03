@@ -17,15 +17,23 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.example.inzyn.adapters.ExerciseListAdapter
 import com.example.inzyn.data.RepositoryLocator
 import com.example.inzyn.data.db.GymDb
 import com.example.inzyn.databinding.ActivityMainBinding
+import com.example.inzyn.model.Exercise
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.util.ArrayList
 import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
@@ -34,6 +42,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var gymDb: GymDb
+    val database = FirebaseDatabase.getInstance().reference
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +51,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
+
 
 
         val navController = findNavController(R.id.nav_host_fragment_content_main)
@@ -116,19 +127,19 @@ class MainActivity : AppCompatActivity() {
 
     private suspend fun calculateTotalSets(): Int = withContext(Dispatchers.IO) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: throw Exception("")
-        val allSets = RepositoryLocator.setRepository.getSetList(userId)
+        val allSets = RepositoryLocator.setRepository.getSetList(userId,database)
         allSets.size
     }
 
     private suspend fun calculateTotalVolume(): Double = withContext(Dispatchers.IO) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: throw Exception("")
-        val allSets = RepositoryLocator.setRepository.getSetList(userId)
+        val allSets = RepositoryLocator.setRepository.getSetList(userId,database)
         allSets.sumOf { it.weight * it.reps }
     }
 
     private suspend fun calculateAverageVolume(): String = withContext(Dispatchers.IO) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: throw Exception("")
-        val allSets = RepositoryLocator.setRepository.getSetList(userId)
+        val allSets = RepositoryLocator.setRepository.getSetList(userId,database)
         if (allSets.isNotEmpty()) {
             val average = allSets.sumOf { it.weight * it.reps } / allSets.size
             String.format(
@@ -142,7 +153,7 @@ class MainActivity : AppCompatActivity() {
 
     private suspend fun calculateFavoriteExercise(): String = withContext(Dispatchers.IO) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: throw Exception("")
-        val allSets = RepositoryLocator.setRepository.getSetList(userId)
+        val allSets = RepositoryLocator.setRepository.getSetList(userId,database)
         val exerciseCounts = allSets.groupingBy { it.exerciseID }.eachCount()
         val favoriteExerciseId = exerciseCounts.maxByOrNull { it.value }?.key
         if (favoriteExerciseId != null) {

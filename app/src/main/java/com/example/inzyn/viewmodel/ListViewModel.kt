@@ -15,6 +15,7 @@ import com.example.inzyn.model.navigation.AddExercise
 import com.example.inzyn.model.navigation.Destination
 import com.example.inzyn.model.navigation.EditExercise
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -25,7 +26,7 @@ class ListViewModel : ViewModel() {
     val exercises: MutableLiveData<List<Exercise>> = MutableLiveData(emptyList())
     val navigation = MutableLiveData<Destination>()
     val userId = FirebaseAuth.getInstance().currentUser?.uid
-
+    val database = FirebaseDatabase.getInstance().reference
 
     init {
         this.loadExercises()
@@ -33,8 +34,8 @@ class ListViewModel : ViewModel() {
 
     private fun loadExercises() {
         viewModelScope.launch(Dispatchers.IO) {
-            exercises.postValue(repository.getExerciseList(userId.toString()))
-            setRepository.getSetList(userId.toString())
+            exercises.postValue(repository.getExerciseList(userId.toString(),database ))
+            setRepository.getSetList(userId.toString(),database)
         }
     }
 
@@ -82,7 +83,7 @@ class ListViewModel : ViewModel() {
 
     suspend fun getSetsForExercise(exerciseId: String): List<Set> {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
-        return RepositoryLocator.setRepository.getSetList(userId.toString())
+        return RepositoryLocator.setRepository.getSetList(userId.toString(),database)
             .filter { it.exerciseID == exerciseId }
     }
 }

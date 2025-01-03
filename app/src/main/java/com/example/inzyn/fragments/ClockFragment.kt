@@ -37,7 +37,7 @@ class ClockFragment : Fragment() {
         viewModel.isRunning.observe(viewLifecycleOwner) { isRunning ->
             if (isRunning) {
                 Toast.makeText(requireContext(), R.string.timer_finished, Toast.LENGTH_SHORT).show()
-                context?.let { viewModel.playSound(it) }
+//                context?.let { viewModel.playSound(it) }
                 enableButtons(true)
             }
         }

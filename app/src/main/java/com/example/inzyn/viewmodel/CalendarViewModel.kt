@@ -13,6 +13,7 @@ import com.example.inzyn.model.navigation.AddSet
 import com.example.inzyn.model.navigation.Destination
 import com.example.inzyn.model.navigation.EditSet
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -22,14 +23,14 @@ class CalendarViewModel : ViewModel() {
     val navigation = MutableLiveData<Destination>()
     val selectedDate: MutableLiveData<String> = MutableLiveData("")
     val userId = FirebaseAuth.getInstance().currentUser?.uid ?: throw Exception("")
-
+    val database = FirebaseDatabase.getInstance().reference
     init {
         this.loadSets()
     }
 
     private fun loadSets() {
         viewModelScope.launch(Dispatchers.IO) {
-            val allSets = setRepository.getSetList(userId)
+            val allSets = setRepository.getSetList(userId,database)
             val filteredSets = selectedDate.value?.let { date ->
                 if (date.isNotEmpty()) {
                     allSets.filter { it.date == date }

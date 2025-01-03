@@ -79,12 +79,12 @@ class ClockViewModel : ViewModel() {
         _isRunning.postValue(false)
     }
 
-    fun playSound(context: Context) {
-        mediaPlayer = MediaPlayer.create(context, R.raw.timer)
-        mediaPlayer.start()
-        mediaPlayer.setOnCompletionListener {
-            it.release()
-        }
-    }
+//    fun playSound(context: Context) {
+//        mediaPlayer = MediaPlayer.create(context, R.raw.timer)
+//        mediaPlayer.start()
+//        mediaPlayer.setOnCompletionListener {
+//            it.release()
+//        }
+//    }
 
 }

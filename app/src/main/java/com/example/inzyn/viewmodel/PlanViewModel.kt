@@ -12,6 +12,7 @@ import com.example.inzyn.model.Plan
 import com.example.inzyn.model.navigation.Destination
 import com.example.inzyn.model.navigation.EditPlan
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -19,6 +20,7 @@ class PlanViewModel : ViewModel() {
     private val repository = RepositoryLocator.planRepository
     val plans: MutableLiveData<List<Plan>> = MutableLiveData(emptyList())
     val navigation = MutableLiveData<Destination>()
+    val database = FirebaseDatabase.getInstance().reference
 
     init {
         this.loadPlans()
@@ -27,8 +29,8 @@ class PlanViewModel : ViewModel() {
     private fun loadPlans() {
         viewModelScope.launch(Dispatchers.IO) {
             val userId = FirebaseAuth.getInstance().currentUser?.uid
-            plans.postValue(repository.getPlanList(userId.toString()))
-            repository.getPlanList(userId.toString())
+            plans.postValue(repository.getPlanList(userId.toString(),database))
+            repository.getPlanList(userId.toString(),database )
         }
     }
 

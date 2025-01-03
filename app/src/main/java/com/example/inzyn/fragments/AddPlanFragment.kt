@@ -23,6 +23,7 @@ import com.example.inzyn.model.Plan
 import com.example.inzyn.viewmodel.AddPlanViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 private const val TYPE_KEY = "type"
 
@@ -31,12 +32,13 @@ class AddPlanFragment : Fragment() {
     private val viewModel: AddPlanViewModel by viewModels()
     private lateinit var type: AddPlanType
     private lateinit var exerciseListAdapter: ExerciseListAdapter
-    private val planRepository: PlanRepository = RepositoryLocator.planRepository
-    private lateinit var planListAdapter: PlanListAdapter
     private var currentPlanId: String? = null
+    val database = FirebaseDatabase.getInstance().reference
+    val userId = FirebaseAuth.getInstance().currentUser?.uid
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         arguments?.let {
             type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 it.getSerializable(TYPE_KEY, AddPlanType::class.java)
@@ -68,9 +70,9 @@ class AddPlanFragment : Fragment() {
 
         viewModel.planId.observe(viewLifecycleOwner){id ->
             currentPlanId = id
+
         }
 
-        val planId = "1"
         exerciseListAdapter = ExerciseListAdapter(
             onItemClick = {},
             onItemLongClick = { position ->

@@ -75,7 +75,7 @@ class TodayPlanViewModel : ViewModel() {
     private fun loadExercises() {
         viewModelScope.launch(Dispatchers.IO) {
             val userId = FirebaseAuth.getInstance().currentUser?.uid
-            val allExercises = exerciseRepository.getExerciseList(userId.toString())
+            val allExercises = exerciseRepository.getExerciseList(userId.toString(),database)
 
             // Debug: Sprawdź exercisesIDs przed filtrowaniem
             println("exercisesIDs before filtering: ${exercisesIDs.value}")
