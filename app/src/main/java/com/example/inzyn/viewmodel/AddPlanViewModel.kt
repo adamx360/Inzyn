@@ -1,6 +1,5 @@
 package com.example.inzyn.viewmodel
 
-
 import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -17,122 +16,120 @@ import com.example.inzyn.model.Plan
 import com.example.inzyn.model.navigation.Destination
 import com.example.inzyn.model.navigation.PopBack
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.GenericTypeIndicator
+import com.google.firebase.database.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class AddPlanViewModel : ViewModel() {
-    private val repository: PlanRepository = RepositoryLocator.planRepository
+
+    private val planRepository: PlanRepository = RepositoryLocator.planRepository
     private val exerciseRepository: ExerciseRepository = RepositoryLocator.exerciseRepository
     private val database: DatabaseReference = FirebaseDatabase.getInstance().reference
-    val exercises: MutableLiveData<List<Exercise>> = MutableLiveData(emptyList())
-    private var edited: Plan? = null
-    private  val _planId = MutableLiveData<String?>()
-    val planId: LiveData<String?> get() = _planId
-    val userId = FirebaseAuth.getInstance().currentUser?.uid
+
+    private val _plan = MutableLiveData<Plan?>(null)
+    val plan: LiveData<Plan?> get() = _plan
+
+    private val _exercises = MutableLiveData<List<Exercise>>(emptyList())
+    val exercises: LiveData<List<Exercise>> get() = _exercises
+
     val name = MutableLiveData("")
-    val exercisesIDs = MutableLiveData<String>()
-    val buttonText = MutableLiveData<Int>()
+
+    private val _buttonText = MutableLiveData<String>("Dodaj")
+    val buttonText: LiveData<String> get() = _buttonText
+
     val navigation = MutableLiveData<Destination>()
-    val description = MutableLiveData("")
 
+    private var planRef: DatabaseReference? = null
+    private var planListener: ValueEventListener? = null
 
-    fun init(id: String?) {
-        _planId.value = id
-        buttonText.value = R.string.add
-        if (id != null) {
-            viewModelScope.launch {
-                try {
-                    database.child("users").child(userId.toString()).child("plans").child(id.toString()).child("exercisesIDs").keepSynced(true)
-                    val userId = FirebaseAuth.getInstance().currentUser?.uid
-                    val plan = repository.getPlanById(userId.toString(), id)
-
-                    println("found")
-                    edited = plan
-                    name.postValue(plan?.name)
-                    buttonText.postValue(R.string.save)
-                    println(plan?.exercisesIDs?.plus(" exercisesIDs found1"))
-                    exercisesIDs.postValue(plan?.exercisesIDs.toString())
-                    // Dodaj obserwatora dla exercisesIDs
-                    exercisesIDs.observeForever { ids ->
-                        if (!ids.isNullOrEmpty()) {
-                            println("exercisesIDs updated: $ids")
-                            loadExercises()
-                            exercisesIDs.removeObserver { } // Usuń obserwatora po pierwszym wywołaniu
-                        }
-                    }
-                } catch (e: NoSuchElementException) {
-                    println("not found")
-                    edited = null
-                    name.postValue("")
-                    buttonText.postValue(R.string.add)
-                    exercisesIDs.postValue("")
-                    loadExercises()
-                }
-            }
+    fun init(planId: String?) {
+        if (planId.isNullOrEmpty()) {
+            _plan.value = Plan(id = "", name = "", exercisesIDs = emptyList())
+            name.value = ""
+            _buttonText.value = "Dodaj"
         } else {
-            println("no id")
-            edited = null
-            name.postValue("")
-            buttonText.postValue(R.string.add)
-            exercisesIDs.postValue("")
-            loadExercises()
+            _buttonText.value = "Zapisz"
+            observePlan(planId)
         }
+    }
+
+    private fun observePlan(planId: String) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        planRef = database.child("users").child(userId).child("plans").child(planId)
+
+        planListener = planRef?.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val loadedPlan = snapshot.getValue(Plan::class.java)
+                _plan.value = loadedPlan
+                name.value = loadedPlan?.name ?: ""
+
+                val ids = loadedPlan?.exercisesIDs ?: emptyList()
+                loadExercises(ids)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                println("observePlan onCancelled: ${error.message}")
+            }
+        })
+    }
+
+    private fun loadExercises(exercisesIDs: List<String>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@launch
+            val all = exerciseRepository.getExerciseList(userId, database)
+            val filtered = all.filter { it.id in exercisesIDs }
+            _exercises.postValue(filtered)
+        }
+    }
+
+    fun removeExercise(exerciseId: String) {
+        val currentPlan = _plan.value ?: return
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        if (currentPlan.id.isEmpty()) return
+        val updatedList = currentPlan.exercisesIDs.toMutableList().apply {
+            remove(exerciseId)
+        }
+
+        database.child("users")
+            .child(userId)
+            .child("plans")
+            .child(currentPlan.id)
+            .child("exercisesIDs")
+            .setValue(updatedList)
     }
 
     fun onSave() {
-        val name = name.value.orEmpty()
-        val exercisesIDsList = exercisesIDs.value.orEmpty().split(",").map { it.trim() }
-        val toSave = edited?.copy(
-            name = name,
-            exercisesIDs = exercisesIDsList
-        ) ?: Plan(
-            id = "",
-            name = name,
-            exercisesIDs = exercisesIDsList
-        )
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val currentPlan = _plan.value ?: return
+        val planName = name.value.orEmpty()
 
-        viewModelScope.launch {
-            val userId = FirebaseAuth.getInstance().currentUser?.uid
-            if (edited == null) {
-                repository.add(userId.toString(), toSave)
-            } else {
-                repository.set(userId.toString(), toSave)
-            }
-            withContext(Dispatchers.Main) {
-                navigation.value = PopBack()
-            }
-        }
-    }
+        if (currentPlan.id.isEmpty()) {
+            val newKey = database
+                .child("users")
+                .child(userId)
+                .child("plans")
+                .push().key ?: return
 
-    private fun loadExercises() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val userId = FirebaseAuth.getInstance().currentUser?.uid
-            val allExercises = exerciseRepository.getExerciseList(userId.toString(), database)
-
-            // Debug: Sprawdź exercisesIDs przed filtrowaniem
-            println("exercisesIDs before filtering: ${exercisesIDs.value}")
-
-            // Pobierz listę exercisesIDs i przekształć ją w listę Int
-            val selectedIds = exercisesIDs.value
-                ?.split(",")?.joinToString(",") { it.trim() }
-                ?: " "
-
-
-            // Debug: Sprawdź przekształcone selectedIds
-            println("Selected IDs for filtering: $selectedIds")
-
-            // Filtruj ćwiczenia na podstawie exercisesIDs
-            val filteredExercises = allExercises.filter { it.id in selectedIds }
-
-            // Debug: Sprawdź przefiltrowane ćwiczenia
-            println("Filtered exercises: $filteredExercises")
-
-            // Zaktualizuj wartość `exercises`
-            exercises.postValue(filteredExercises)
+            val newPlan = currentPlan.copy(id = newKey, name = planName)
+            database.child("users")
+                .child(userId)
+                .child("plans")
+                .child(newKey)
+                .setValue(newPlan)
+                .addOnCompleteListener {
+                    navigation.postValue(PopBack())
+                }
+        } else {
+            val updatedPlan = currentPlan.copy(name = planName)
+            database.child("users")
+                .child(userId)
+                .child("plans")
+                .child(updatedPlan.id)
+                .setValue(updatedPlan)
+                .addOnCompleteListener {
+                    navigation.postValue(PopBack())
+                }
         }
     }
 
@@ -141,33 +138,12 @@ class AddPlanViewModel : ViewModel() {
         destination: NavDestination,
         arguments: Bundle?
     ) {
-        if (destination.id == R.id.addPlanFragment) {
-            this.loadExercises()
-        }
     }
 
     override fun onCleared() {
         super.onCleared()
-        exercisesIDs.removeObserver { loadExercises() }
-    }
-
-    fun removeExerciseFromPlan(userId: String, planId: String, exerciseId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val exerciseRef = database.child("users").child(userId).child("plans").child(planId)
-                .child("exercisesIDs")
-            exerciseRef.get().addOnSuccessListener { snapshot ->
-                val currentList =
-                    snapshot.getValue(object : GenericTypeIndicator<List<String>>() {})
-                        ?: emptyList()
-                val updatedList = currentList.toMutableList().apply { remove(exerciseId) }
-                exerciseRef.setValue(updatedList).addOnSuccessListener {
-                    exercisesIDs.postValue(updatedList.joinToString(","))
-                    loadExercises()
-                }
-
-                println("List $updatedList")
-            }
-
+        planListener?.let {
+            planRef?.removeEventListener(it)
         }
     }
 }
