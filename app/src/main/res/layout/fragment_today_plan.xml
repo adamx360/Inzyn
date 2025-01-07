@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="viewModel"
             type="com.example.inzyn.viewmodel.TodayPlanViewModel" />
@@ -13,32 +13,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".fragments.FormFragment">
+        tools:context=".fragments.TodayPlanFragment">
 
-        <TextView
-            android:id="@+id/label_exercises"
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/exercises"
-            app:layout_constraintStart_toStartOf="@+id/label_name"
-            app:layout_constraintTop_toBottomOf="@+id/field_name" />
-
-        <TextView
-            android:id="@+id/field_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:autofillHints=""
-            android:ems="10"
-            android:hint="@string/name"
-            android:minHeight="48dp"
-            android:text="@={viewModel.name}"
-            android:textSize="34sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/label_name"
-            app:layout_constraintTop_toBottomOf="@+id/label_name" />
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.1" />
 
         <TextView
             android:id="@+id/label_name"
@@ -49,23 +31,37 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline" />
 
+        <TextView
+            android:id="@+id/field_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:hint="@string/name"
+            android:text="@={viewModel.name}"
+            android:textSize="34sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/label_name"
+            app:layout_constraintTop_toBottomOf="@+id/label_name" />
+
+        <TextView
+            android:id="@+id/label_exercises"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/exercises"
+            app:layout_constraintStart_toStartOf="@+id/field_name"
+            app:layout_constraintTop_toBottomOf="@+id/field_name" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/exerciseList"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/label_exercises"
             tools:listitem="@layout/exercise_item" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.1" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -24,19 +24,16 @@ class TodayPlanFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return FragmentTodayPlanBinding.inflate(inflater, container, false).also {
-            binding = it
-            binding.viewModel = viewModel
-            binding.lifecycleOwner = viewLifecycleOwner
-        }.root
+        binding = FragmentTodayPlanBinding.inflate(inflater, container, false)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        with(viewModel) {
-            init()
-            navigation.observe(viewLifecycleOwner) {
-                it.resolve(findNavController())
-            }
+        viewModel.init()
+        viewModel.navigation.observe(viewLifecycleOwner) {
+            it.resolve(findNavController())
         }
 
         exerciseListAdapter = ExerciseListAdapter(
@@ -44,17 +41,17 @@ class TodayPlanFragment : Fragment() {
             onItemLongClick = { position ->
                 val selectedExercise: Exercise = exerciseListAdapter.exerciseList[position]
                 AlertDialog.Builder(requireContext())
-                    .setTitle(String.format(getString(R.string.delete_exercise)))
+                    .setTitle(getString(R.string.delete_exercise))
                     .setMessage(
-                        String.format(getString(R.string.do_you_want_to_delete)) + " " + selectedExercise.name + String.format(
-                            getString(R.string.from_plan)
-                        ) + " ?"
+                        getString(R.string.do_you_want_to_delete) + " " +
+                                selectedExercise.name +
+                                getString(R.string.from_plan) + " ?"
                     )
-                    .setNegativeButton(String.format(getString(R.string.Delete))) { dialog, _ ->
+                    .setNegativeButton(getString(R.string.Delete)) { dialog, _ ->
                         viewModel.removeExerciseFromPlan(selectedExercise.id)
                         dialog.dismiss()
                     }
-                    .setNeutralButton(String.format(getString(R.string.Cancel))) { dialog, _ ->
+                    .setNeutralButton(getString(R.string.Cancel)) { dialog, _ ->
                         dialog.dismiss()
                     }
                     .show()
@@ -63,9 +60,7 @@ class TodayPlanFragment : Fragment() {
                 val exerciseId = exerciseListAdapter.exerciseList[position]
                 navigateToAddSetFragment(exerciseId)
             },
-            stats = { position ->
-                val exerciseId = exerciseListAdapter.exerciseList[position]
-            }
+            stats = {}
         )
 
         binding.exerciseList.apply {
@@ -73,13 +68,9 @@ class TodayPlanFragment : Fragment() {
             adapter = exerciseListAdapter
         }
 
-        viewModel.exercises.observe(viewLifecycleOwner) {
-            println("Loaded gyms: $it") // Debugowanie danych
-            exerciseListAdapter.exerciseList = it
-        }
-
-        viewModel.navigation.observe(viewLifecycleOwner) {
-            it.resolve(findNavController())
+        viewModel.exercises.observe(viewLifecycleOwner) { newList ->
+            println("Loaded exercises: $newList") // Debug
+            exerciseListAdapter.exerciseList = newList
         }
     }
 
