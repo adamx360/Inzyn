@@ -6,5 +6,4 @@ class PopBack : Destination() {
     override fun navigate(controller: NavController) {
         controller.popBackStack()
     }
-
 }

@@ -13,18 +13,15 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_login)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         auth = FirebaseAuth.getInstance()
 
-        val currentUser = auth.currentUser
-        if (currentUser != null) {
+        if (auth.currentUser != null) {
             navigateToMainActivity()
         }
         binding.login.setOnClickListener {
-
             val email = binding.email.text.toString().trim()
             val password = binding.password.text.toString().trim()
 
@@ -38,25 +35,24 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-
     private fun loginUser(email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     navigateToMainActivity()
+                } else {
+
                 }
             }
     }
 
     private fun navigateToMainActivity() {
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
+        startActivity(Intent(this, MainActivity::class.java))
         finish()
     }
 
     private fun navigateToRegisterActivity() {
-        val intent = Intent(this, RegisterActivity::class.java)
-        startActivity(intent)
+        startActivity(Intent(this, RegisterActivity::class.java))
         finish()
     }
 }

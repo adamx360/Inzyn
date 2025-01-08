@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.inzyn.databinding.FragmentAddSetBinding
 import com.example.inzyn.model.AddSetType
@@ -21,7 +20,6 @@ class AddSetFragment : Fragment() {
     private lateinit var type: AddSetType
     private var exerciseId: String? = null
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -31,27 +29,26 @@ class AddSetFragment : Fragment() {
                 @Suppress("DEPRECATION")
                 it.getSerializable(TYPE_KEY) as? AddSetType
             } ?: AddSetType.New
+
             exerciseId = it.getString("exerciseID")
         }
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return FragmentAddSetBinding.inflate(inflater, container, false).also {
-            binding = it
-            binding.viewModel = viewModel
-            binding.lifecycleOwner = viewLifecycleOwner
-        }.root
+        binding = FragmentAddSetBinding.inflate(inflater, container, false)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        with(viewModel) {
-            init((type as? AddSetType.Edit)?.id, exerciseId)
-            navigation.observe(viewLifecycleOwner) {
-                it.resolve(findNavController())
-            }
+        viewModel.init((type as? AddSetType.Edit)?.id, exerciseId)
+        viewModel.navigation.observe(viewLifecycleOwner) {
+            it.resolve(findNavController())
         }
 
         setupButtons()
@@ -64,8 +61,6 @@ class AddSetFragment : Fragment() {
     }
 
     private fun saveFormData() {
-        val viewModel = ViewModelProvider(this)[AddSetViewModel::class.java]
         viewModel.onSave()
     }
-
 }

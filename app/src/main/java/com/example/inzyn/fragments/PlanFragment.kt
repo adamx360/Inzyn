@@ -21,16 +21,13 @@ class PlanFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return FragmentPlanBinding.inflate(inflater, container, false).also {
-            binding = it
-            binding.viewModel = viewModel
-            binding.lifecycleOwner = viewLifecycleOwner
-        }.root
+        binding = FragmentPlanBinding.inflate(inflater, container, false)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
         planListAdapter = PlanListAdapter(
             onItemClick = { position ->
                 viewModel.onEditPlan(planListAdapter.planList[position])
@@ -43,15 +40,13 @@ class PlanFragment : Fragment() {
         }
 
         viewModel.plans.observe(viewLifecycleOwner) {
-            println("Loaded plans: $it") // Debugowanie danych
+            println("Loaded plans: $it")
             planListAdapter.planList = it
         }
-
         viewModel.navigation.observe(viewLifecycleOwner) {
             it.resolve(findNavController())
         }
     }
-
 
     override fun onStart() {
         super.onStart()

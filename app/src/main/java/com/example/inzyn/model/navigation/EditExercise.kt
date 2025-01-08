@@ -12,6 +12,5 @@ class EditExercise(val exercise: Exercise) : Destination() {
             R.id.action_listFragment_to_addExerciseFragment,
             bundleOf("type" to AddExerciseType.Edit(exercise.id))
         )
-
     }
 }

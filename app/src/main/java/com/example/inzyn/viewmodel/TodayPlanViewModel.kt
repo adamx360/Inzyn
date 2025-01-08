@@ -23,20 +23,21 @@ import java.time.LocalDateTime
 class TodayPlanViewModel : ViewModel() {
     private val repository: PlanRepository = RepositoryLocator.planRepository
     private val exerciseRepository: ExerciseRepository = RepositoryLocator.exerciseRepository
-    val exercises: MutableLiveData<List<Exercise>> = MutableLiveData(emptyList())
+    val exercises = MutableLiveData<List<Exercise>>(emptyList())
     val name = MutableLiveData("")
-    val exercisesIDs = MutableLiveData("")
+    private val exercisesIDs = MutableLiveData("")
     val buttonText = MutableLiveData<Int>()
     val navigation = MutableLiveData<Destination>()
     val description = MutableLiveData("")
     private val planId: String = LocalDateTime.now().dayOfWeek.value.toString()
-    private val userId = FirebaseAuth.getInstance().currentUser?.uid
+
+    private val userId = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
     private val database: DatabaseReference = FirebaseDatabase.getInstance().reference
 
     fun init() {
         viewModelScope.launch {
             try {
-                val plan = repository.getPlanById(userId ?: return@launch, planId)
+                val plan = repository.getPlanById(userId, planId)
                 if (plan != null) {
                     println("Found plan for day $planId")
                     name.postValue(plan.name)
@@ -49,7 +50,6 @@ class TodayPlanViewModel : ViewModel() {
                     buttonText.postValue(R.string.add)
                 }
                 loadExercises()
-
             } catch (e: NoSuchElementException) {
                 println("No plan found for day $planId (NoSuchElementException)")
                 name.postValue("")
@@ -62,15 +62,15 @@ class TodayPlanViewModel : ViewModel() {
 
     private fun loadExercises() {
         viewModelScope.launch(Dispatchers.IO) {
-            val uid = userId ?: return@launch
-            val allExercises = exerciseRepository.getExerciseList(uid, database)
-            val selectedIdsStr = exercisesIDs.value
+            val allExercises = exerciseRepository.getExerciseList(userId, database)
+            val selectedIds = exercisesIDs.value
                 ?.split(",")
                 ?.map { it.trim() }
                 ?.filter { it.isNotBlank() }
                 ?: emptyList()
-            println("Selected exercise IDs: $selectedIdsStr")
-            val filtered = allExercises.filter { it.id in selectedIdsStr }
+
+            println("Selected exercise IDs: $selectedIds")
+            val filtered = allExercises.filter { it.id in selectedIds }
             println("Filtered exercises: $filtered")
             exercises.postValue(filtered)
         }
@@ -78,19 +78,18 @@ class TodayPlanViewModel : ViewModel() {
 
     fun removeExerciseFromPlan(exerciseId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@launch
             val currentIds = exercisesIDs.value
                 ?.split(",")
                 ?.map { it.trim() }
                 ?.filter { it.isNotBlank() }
                 ?.toMutableList()
                 ?: mutableListOf()
+
             if (currentIds.contains(exerciseId)) {
                 currentIds.remove(exerciseId)
-                val updatedString = currentIds.joinToString(",")
-                exercisesIDs.postValue(updatedString)
-                database
-                    .child("users")
+                exercisesIDs.postValue(currentIds.joinToString(","))
+
+                database.child("users")
                     .child(userId)
                     .child("plans")
                     .child(planId)
@@ -99,8 +98,8 @@ class TodayPlanViewModel : ViewModel() {
                     .addOnSuccessListener {
                         println("Updated plan in Firebase – removed $exerciseId")
                     }
-                    .addOnFailureListener { e ->
-                        println("Error removing $exerciseId from plan: ${e.message}")
+                    .addOnFailureListener {
+                        println("Error removing $exerciseId from plan: ${it.message}")
                     }
             }
             loadExercises()

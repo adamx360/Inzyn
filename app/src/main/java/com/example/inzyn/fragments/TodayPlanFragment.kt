@@ -45,7 +45,7 @@ class TodayPlanFragment : Fragment() {
                     .setMessage(
                         getString(R.string.do_you_want_to_delete) + " " +
                                 selectedExercise.name +
-                                getString(R.string.from_plan) + " ?"
+                                getString(R.string.from_plan) + "?"
                     )
                     .setNegativeButton(getString(R.string.Delete)) { dialog, _ ->
                         viewModel.removeExerciseFromPlan(selectedExercise.id)
@@ -57,8 +57,8 @@ class TodayPlanFragment : Fragment() {
                     .show()
             },
             addSet = { position ->
-                val exerciseId = exerciseListAdapter.exerciseList[position]
-                navigateToAddSetFragment(exerciseId)
+                val exercise = exerciseListAdapter.exerciseList[position]
+                navigateToAddSetFragment(exercise)
             },
             stats = {}
         )
@@ -69,7 +69,7 @@ class TodayPlanFragment : Fragment() {
         }
 
         viewModel.exercises.observe(viewLifecycleOwner) { newList ->
-            println("Loaded exercises: $newList") // Debug
+            println("Loaded exercises: $newList")
             exerciseListAdapter.exerciseList = newList
         }
     }

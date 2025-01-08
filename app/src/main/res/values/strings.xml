@@ -37,7 +37,7 @@
     <string name="set_exercise_name">Exercise name</string>
     <string name="today_s_plan">Today\'s plan</string>
     <string name="plans">Plans</string>
-    <string name="Total_series">Total series done: </string>
+    <string name="Total_series">Total sets done: </string>
     <string name="Exercise_stats">Exercise stats</string>
     <string name="total_training_volume">Total training volume:</string>
     <string name="avg_exercise_volume">Average volume per exercise:</string>

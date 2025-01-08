@@ -10,7 +10,7 @@ import com.example.inzyn.model.Exercise
 class ExerciseItem(
     private val binding: ExerciseItemBinding
 ) : RecyclerView.ViewHolder(binding.root) {
-    var id: Int = 0
+    private var localId: Int = 0
         private set
 
     fun onBind(
@@ -22,21 +22,15 @@ class ExerciseItem(
     ) {
         with(binding) {
             val intId = exerciseItem.id.toIntOrNull() ?: 0
-            id = intId
+            localId = intId
             name.text = exerciseItem.name
-            root.setOnClickListener {
-                onItemClick()
-            }
+            root.setOnClickListener { onItemClick() }
             root.setOnLongClickListener {
                 onItemLongClick()
-                return@setOnLongClickListener true
+                true
             }
-            addSetButton.setOnClickListener {
-                addSet()
-            }
-            statsButton.setOnClickListener {
-                stats()
-            }
+            addSetButton.setOnClickListener { addSet() }
+            statsButton.setOnClickListener { stats() }
         }
     }
 }
@@ -63,8 +57,9 @@ class ExerciseListAdapter(
     override fun getItemCount(): Int = exerciseList.size
 
     override fun onBindViewHolder(holder: ExerciseItem, position: Int) {
+        val exercise = exerciseList[position]
         holder.onBind(
-            exerciseList[position],
+            exercise,
             onItemClick = { onItemClick(position) },
             onItemLongClick = { onItemLongClick(position) },
             addSet = { addSet(position) },

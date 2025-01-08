@@ -10,26 +10,29 @@ import com.example.inzyn.model.Set
 class SetItem(
     private val binding: SetItemBinding
 ) : RecyclerView.ViewHolder(binding.root) {
-    var id: Int = 0
+    private var localId: Int = 0
         private set
-    var date: String = ""
+    private var date: String = ""
         private set
 
-    fun onBind(setItem: Set, onItemClick: () -> Unit, onItemLongClick: () -> Unit) {
+    fun onBind(
+        setItem: Set,
+        onItemClick: () -> Unit,
+        onItemLongClick: () -> Unit
+    ) {
         with(binding) {
             val intId = setItem.id.toIntOrNull() ?: 0
-            id = intId
+            localId = intId
+            date = setItem.date
+
             exerciseName.text = setItem.exerciseName
             weight.text = setItem.weight.toString()
             reps.text = setItem.reps.toString()
-            date = setItem.date
 
-            root.setOnClickListener {
-                onItemClick()
-            }
+            root.setOnClickListener { onItemClick() }
             root.setOnLongClickListener {
                 onItemLongClick()
-                return@setOnLongClickListener true
+                true
             }
         }
     }
@@ -55,8 +58,9 @@ class SetListAdapter(
     override fun getItemCount(): Int = setList.size
 
     override fun onBindViewHolder(holder: SetItem, position: Int) {
+        val item = setList[position]
         holder.onBind(
-            setList[position],
+            item,
             onItemClick = { onItemClick(position) },
             onItemLongClick = { onItemLongClick(position) }
         )

@@ -40,7 +40,8 @@ class AddPlanFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentAddPlanBinding.inflate(inflater, container, false)
@@ -73,7 +74,6 @@ class AddPlanFragment : Fragment() {
         viewModel.exercises.observe(viewLifecycleOwner) { newList ->
             exerciseListAdapter.exerciseList = newList
         }
-
         viewModel.navigation.observe(viewLifecycleOwner) {
             it.resolve(findNavController())
         }

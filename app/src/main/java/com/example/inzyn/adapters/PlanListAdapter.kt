@@ -10,16 +10,17 @@ import com.example.inzyn.model.Plan
 class PlanItem(
     private val binding: PlanItemBinding
 ) : RecyclerView.ViewHolder(binding.root) {
-    var id: Int = 0
+    private var localId: Int = 0
         private set
 
-    fun onBind(planItem: Plan, onItemClick: () -> Unit) {
+    fun onBind(
+        planItem: Plan,
+        onItemClick: () -> Unit
+    ) {
         with(binding) {
-            id = planItem.id.toIntOrNull() ?: 0
+            localId = planItem.id.toIntOrNull() ?: 0
             planName.text = planItem.name
-            root.setOnClickListener {
-                onItemClick()
-            }
+            root.setOnClickListener { onItemClick() }
         }
     }
 }

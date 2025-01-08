@@ -12,6 +12,7 @@ import com.example.inzyn.model.Plan
 import com.example.inzyn.model.navigation.Destination
 import com.example.inzyn.model.navigation.EditPlan
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,17 +21,19 @@ class PlanViewModel : ViewModel() {
     private val repository = RepositoryLocator.planRepository
     val plans: MutableLiveData<List<Plan>> = MutableLiveData(emptyList())
     val navigation = MutableLiveData<Destination>()
-    val database = FirebaseDatabase.getInstance().reference
+
+    private val database: DatabaseReference = FirebaseDatabase.getInstance().reference
+    private val userId = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
 
     init {
-        this.loadPlans()
+        loadPlans()
     }
 
     private fun loadPlans() {
         viewModelScope.launch(Dispatchers.IO) {
-            val userId = FirebaseAuth.getInstance().currentUser?.uid
-            plans.postValue(repository.getPlanList(userId.toString(),database))
-            repository.getPlanList(userId.toString(),database )
+            val planList = repository.getPlanList(userId, database)
+            println("Loaded plans: $planList") // Debug
+            plans.postValue(planList)
         }
     }
 
@@ -38,14 +41,13 @@ class PlanViewModel : ViewModel() {
         navigation.value = EditPlan(plan)
     }
 
-
     fun onDestinationChange(
         controller: NavController,
         destination: NavDestination,
         arguments: Bundle?
     ) {
         if (destination.id == R.id.planFragment) {
-            this.loadPlans()
+            loadPlans()
         }
     }
 }

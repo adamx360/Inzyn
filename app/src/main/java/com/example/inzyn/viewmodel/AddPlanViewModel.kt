@@ -7,9 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
-import com.example.inzyn.R
 import com.example.inzyn.data.ExerciseRepository
-import com.example.inzyn.data.PlanRepository
 import com.example.inzyn.data.RepositoryLocator
 import com.example.inzyn.model.Exercise
 import com.example.inzyn.model.Plan
@@ -21,8 +19,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class AddPlanViewModel : ViewModel() {
-
-    private val planRepository: PlanRepository = RepositoryLocator.planRepository
     private val exerciseRepository: ExerciseRepository = RepositoryLocator.exerciseRepository
     private val database: DatabaseReference = FirebaseDatabase.getInstance().reference
 
@@ -34,7 +30,7 @@ class AddPlanViewModel : ViewModel() {
 
     val name = MutableLiveData("")
 
-    private val _buttonText = MutableLiveData<String>("Dodaj")
+    private val _buttonText = MutableLiveData("Dodaj")
     val buttonText: LiveData<String> get() = _buttonText
 
     val navigation = MutableLiveData<Destination>()
@@ -54,14 +50,14 @@ class AddPlanViewModel : ViewModel() {
     }
 
     private fun observePlan(planId: String) {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val userId = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
         planRef = database.child("users").child(userId).child("plans").child(planId)
 
         planListener = planRef?.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val loadedPlan = snapshot.getValue(Plan::class.java)
                 _plan.value = loadedPlan
-                name.value = loadedPlan?.name ?: ""
+                name.value = loadedPlan?.name.orEmpty()
 
                 val ids = loadedPlan?.exercisesIDs ?: emptyList()
                 loadExercises(ids)
@@ -75,7 +71,7 @@ class AddPlanViewModel : ViewModel() {
 
     private fun loadExercises(exercisesIDs: List<String>) {
         viewModelScope.launch(Dispatchers.IO) {
-            val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@launch
+            val userId = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
             val all = exerciseRepository.getExerciseList(userId, database)
             val filtered = all.filter { it.id in exercisesIDs }
             _exercises.postValue(filtered)
@@ -84,13 +80,12 @@ class AddPlanViewModel : ViewModel() {
 
     fun removeExercise(exerciseId: String) {
         val currentPlan = _plan.value ?: return
-        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-
+        val userId = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
         if (currentPlan.id.isEmpty()) return
+
         val updatedList = currentPlan.exercisesIDs.toMutableList().apply {
             remove(exerciseId)
         }
-
         database.child("users")
             .child(userId)
             .child("plans")
@@ -100,13 +95,12 @@ class AddPlanViewModel : ViewModel() {
     }
 
     fun onSave() {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val userId = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
         val currentPlan = _plan.value ?: return
         val planName = name.value.orEmpty()
 
         if (currentPlan.id.isEmpty()) {
-            val newKey = database
-                .child("users")
+            val newKey = database.child("users")
                 .child(userId)
                 .child("plans")
                 .push().key ?: return
@@ -142,8 +136,6 @@ class AddPlanViewModel : ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-        planListener?.let {
-            planRef?.removeEventListener(it)
-        }
+        planListener?.let { planRef?.removeEventListener(it) }
     }
 }

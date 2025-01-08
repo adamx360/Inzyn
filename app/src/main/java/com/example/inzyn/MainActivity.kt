@@ -17,23 +17,13 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import com.example.inzyn.adapters.ExerciseListAdapter
 import com.example.inzyn.data.RepositoryLocator
 import com.example.inzyn.data.db.GymDb
 import com.example.inzyn.databinding.ActivityMainBinding
-import com.example.inzyn.model.Exercise
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.database
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.File
-import java.util.ArrayList
 import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
@@ -262,8 +252,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun sampleData() {
-       gymDb.planWrite()
-       gymDb.exerciseWrite()
+       gymDb.writePlans()
+       gymDb.writeExercises()
 
     }
 

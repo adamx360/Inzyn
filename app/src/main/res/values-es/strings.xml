@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Inzyn</string>
     <string name="action_settings">Ajustes</string>
     <string name="list_fragment_label">"Lista de ejercicios "</string>
     <string name="calendar_fragment_label">Calendario</string>

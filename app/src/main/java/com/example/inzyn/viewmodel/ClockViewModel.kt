@@ -1,19 +1,14 @@
 package com.example.inzyn.viewmodel
 
-
-import android.content.Context
 import android.icu.text.DecimalFormat
-import android.media.MediaPlayer
 import android.os.CountDownTimer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.inzyn.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
 
 class ClockViewModel : ViewModel() {
     private var countDownTimer: CountDownTimer? = null
@@ -23,25 +18,24 @@ class ClockViewModel : ViewModel() {
     private val _isRunning = MutableLiveData<Boolean>()
     val isRunning: LiveData<Boolean> get() = _isRunning
 
-    private var time: Long = 0L
+    private var timeMillis: Long = 0L
     private var starterTime: Long = 0L
-    private lateinit var mediaPlayer: MediaPlayer
 
     init {
         viewModelScope.launch {
             withContext(Dispatchers.Main) {
-                _isRunning.postValue(false)
-                _remainingTime.postValue("00:00")
+                _isRunning.value = false
+                _remainingTime.value = "00:00"
             }
         }
     }
 
     fun startTimer(interval: Long = 1000L) {
         stopTimer()
-        countDownTimer = object : CountDownTimer(time, interval) {
+        countDownTimer = object : CountDownTimer(timeMillis, interval) {
             override fun onTick(millisUntilFinished: Long) {
-                time = millisUntilFinished
-                updateTimeDisplay(time)
+                timeMillis = millisUntilFinished
+                updateTimeDisplay(timeMillis)
             }
 
             override fun onFinish() {
@@ -51,32 +45,32 @@ class ClockViewModel : ViewModel() {
         }.start()
     }
 
-    fun updateTimeDisplay(millis: Long) {
-        val f = DecimalFormat("00")
-        val min = (millis / 60000) % 60
-        val sec = (millis / 1000) % 60
-        _remainingTime.postValue("${f.format(min)}:${f.format(sec)}")
-    }
-
     fun stopTimer() {
         countDownTimer?.cancel()
     }
 
     fun addTime(seconds: Long) {
-        time += seconds * 1000
-        updateTimeDisplay(time)
+        timeMillis += seconds * 1000
+        updateTimeDisplay(timeMillis)
     }
 
     fun subtractTime(seconds: Long) {
-        time = (time - seconds * 1000).coerceAtLeast(0)
-        updateTimeDisplay(time)
+        timeMillis = (timeMillis - seconds * 1000).coerceAtLeast(0)
+        updateTimeDisplay(timeMillis)
     }
 
     fun resetTimer() {
         stopTimer()
-        time = starterTime
-        updateTimeDisplay(time)
-        _isRunning.postValue(false)
+        timeMillis = starterTime
+        updateTimeDisplay(timeMillis)
+        _isRunning.value = false
+    }
+
+    private fun updateTimeDisplay(millis: Long) {
+        val f = DecimalFormat("00")
+        val min = (millis / 60000) % 60
+        val sec = (millis / 1000) % 60
+        _remainingTime.postValue("${f.format(min)}:${f.format(sec)}")
     }
 
 //    fun playSound(context: Context) {
@@ -86,5 +80,4 @@ class ClockViewModel : ViewModel() {
 //            it.release()
 //        }
 //    }
-
 }

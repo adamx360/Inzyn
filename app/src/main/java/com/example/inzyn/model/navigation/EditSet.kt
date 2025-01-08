@@ -12,6 +12,5 @@ class EditSet(val set: Set) : Destination() {
             R.id.action_calendarFragment_to_addSetFragment,
             bundleOf("type" to AddSetType.Edit(set.id))
         )
-
     }
 }

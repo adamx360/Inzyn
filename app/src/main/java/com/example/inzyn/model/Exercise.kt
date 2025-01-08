@@ -1,7 +1,7 @@
 package com.example.inzyn.model
 
 data class Exercise(
-    var id: String = "",
-    var name: String = "",
-    var description: String = "",
+    val id: String = "",
+    val name: String = "",
+    val description: String = ""
 )

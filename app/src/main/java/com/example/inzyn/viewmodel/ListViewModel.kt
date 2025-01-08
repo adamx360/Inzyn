@@ -1,6 +1,5 @@
 package com.example.inzyn.viewmodel
 
-
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,22 +19,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ListViewModel : ViewModel() {
-    private val repository = RepositoryLocator.exerciseRepository
+    private val exerciseRepository = RepositoryLocator.exerciseRepository
     private val setRepository = RepositoryLocator.setRepository
     private val planRepository = RepositoryLocator.planRepository
     val exercises: MutableLiveData<List<Exercise>> = MutableLiveData(emptyList())
     val navigation = MutableLiveData<Destination>()
-    val userId = FirebaseAuth.getInstance().currentUser?.uid
-    val database = FirebaseDatabase.getInstance().reference
+    private val userId = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
+    private val database = FirebaseDatabase.getInstance().reference
 
     init {
-        this.loadExercises()
+        loadExercises()
     }
 
     private fun loadExercises() {
         viewModelScope.launch(Dispatchers.IO) {
-            exercises.postValue(repository.getExerciseList(userId.toString(),database ))
-            setRepository.getSetList(userId.toString(),database)
+            val exList = exerciseRepository.getExerciseList(userId, database)
+            exercises.postValue(exList)
         }
     }
 
@@ -48,11 +47,26 @@ class ListViewModel : ViewModel() {
     }
 
     fun onExerciseRemove(id: String) {
-        viewModelScope.launch {
-            val userId = FirebaseAuth.getInstance().currentUser?.uid
-            repository.removeById(userId.toString(), id)
+        viewModelScope.launch(Dispatchers.IO) {
+            exerciseRepository.removeById(userId, id)
             loadExercises()
         }
+    }
+
+    fun addExerciseToPlan(exerciseId: String, planDayId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val plan = planRepository.getPlanById(userId, planDayId)
+            val updatedPlan = plan?.copy(exercisesIDs = plan.exercisesIDs + exerciseId)
+            if (updatedPlan != null) {
+                planRepository.set(userId, updatedPlan)
+            }
+            println("Exercise $exerciseId added to plan $planDayId")
+        }
+    }
+
+    suspend fun getSetsForExercise(exerciseId: String): List<Set> {
+        return setRepository.getSetList(userId, database)
+            .filter { it.exerciseID == exerciseId }
     }
 
     fun onDestinationChange(
@@ -61,30 +75,7 @@ class ListViewModel : ViewModel() {
         arguments: Bundle?
     ) {
         if (destination.id == R.id.listFragment) {
-            this.loadExercises()
+            loadExercises()
         }
-    }
-
-    fun addExerciseToPlan(exerciseId: String, planDayId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val userId = FirebaseAuth.getInstance().currentUser?.uid
-            val plan = planRepository.getPlanById(userId.toString(), planDayId)
-            val updatedPlan = plan?.copy(exercisesIDs = plan.exercisesIDs + exerciseId)
-            if (updatedPlan != null) {
-                planRepository.set(userId.toString(), updatedPlan)
-            }
-            println("Exercise $exerciseId added to plan $planDayId")
-
-
-        }
-
-    }
-
-
-    suspend fun getSetsForExercise(exerciseId: String): List<Set> {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        return RepositoryLocator.setRepository.getSetList(userId.toString(),database)
-            .filter { it.exerciseID == exerciseId }
     }
 }
-

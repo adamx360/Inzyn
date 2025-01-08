@@ -17,7 +17,7 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
 class AddSetViewModel : ViewModel() {
-    private val repository: SetRepository = RepositoryLocator.setRepository
+    private val setRepository: SetRepository = RepositoryLocator.setRepository
     private val exerciseRepository: ExerciseRepository = RepositoryLocator.exerciseRepository
     private var edited: Set? = null
 
@@ -27,93 +27,88 @@ class AddSetViewModel : ViewModel() {
     val description = MutableLiveData("")
     val weight = MutableLiveData<String>()
     val reps = MutableLiveData<String>()
-    val date = MutableLiveData<String>()
+    private val date = MutableLiveData<String>()
     val exerciseName = MutableLiveData<String>()
-    var exerciseIDs: String = ""
-    val userId = FirebaseAuth.getInstance().currentUser?.uid
+    private var exerciseId: String = ""
 
-
-    fun init(id: String?, exerciseID: String?) {
-        exerciseIDs = exerciseID ?: " "
+    fun init(setId: String?, exerciseID: String?) {
+        exerciseId = exerciseID.orEmpty()
         buttonText.value = R.string.add
-        if (id != null) {
+
+        if (setId != null) {
             viewModelScope.launch {
+                val userId = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
                 try {
-                    val set = repository.getSetById(userId.toString(), id)
-                    exerciseName.postValue(set?.exerciseName)
-                    println("Exercise name: $exerciseName")
-                    println("found")
-                    edited = set
-                    name.postValue(set?.exerciseName)
-                    description.postValue(set?.description)
-                    weight.postValue(set?.weight.toString())
-                    reps.postValue(set?.reps.toString())
-                    date.postValue(LocalDate.now().toString())
+                    val setItem = setRepository.getSetById(userId, setId)
+                    println("found set: $setItem")
+
+                    edited = setItem
+                    exerciseName.postValue(setItem?.exerciseName.orEmpty())
+                    name.postValue(setItem?.exerciseName.orEmpty())
+                    description.postValue(setItem?.description.orEmpty())
+                    weight.postValue(setItem?.weight?.toString().orEmpty())
+                    reps.postValue(setItem?.reps?.toString().orEmpty())
+                    date.postValue(setItem?.date ?: LocalDate.now().toString())
                     buttonText.postValue(R.string.save)
 
                 } catch (e: NoSuchElementException) {
                     println("not found")
-                    edited = null
-                    exerciseName.postValue("notfound1")
-                    name.postValue("notfound")
-                    description.postValue("")
-                    weight.postValue("0.0")
-                    reps.postValue("0")
-                    date.postValue(LocalDate.now().toString())
-                    buttonText.postValue(R.string.add)
-                    exerciseName.postValue("")
+                    resetFieldsForNewSet()
                 }
             }
         } else {
             viewModelScope.launch {
-                println("no id")
-                exerciseName.postValue(
-                    exerciseRepository.getExerciseById(
-                        userId.toString(),
-                        exerciseIDs
-                    )?.name
-                )
-                println("Exercise name: $exerciseName")
-                description.postValue("")
-                weight.postValue("0.0")
-                reps.postValue("0")
-                date.postValue(LocalDate.now().toString())
-                buttonText.postValue(R.string.add)
+                val userId = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
+                val exName = exerciseRepository.getExerciseById(userId, exerciseId)?.name.orEmpty()
+                exerciseName.postValue(exName)
+                println("Exercise name: $exName")
+
+                resetFieldsForNewSet()
             }
         }
     }
 
+    private fun resetFieldsForNewSet() {
+        edited = null
+        name.postValue("")
+        description.postValue("")
+        weight.postValue("0.0")
+        reps.postValue("0")
+        date.postValue(LocalDate.now().toString())
+        buttonText.postValue(R.string.add)
+    }
+
     fun onSave() {
-        val description = description.value.orEmpty()
-        val exerciseID = exerciseIDs
-        val weight = weight.value.orEmpty().toDouble()
-        val reps = reps.value.orEmpty().toInt()
-        val date = date.value.orEmpty()
-        val exerciseName = exerciseName.value.orEmpty()
+        val userId = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
+        val newDescription = description.value.orEmpty()
+        val newExerciseId = exerciseId
+        val newWeight = weight.value.orEmpty().toDoubleOrNull() ?: 0.0
+        val newReps = reps.value.orEmpty().toIntOrNull() ?: 0
+        val newDate = date.value.orEmpty()
+        val newExerciseName = exerciseName.value.orEmpty()
 
         val toSave = edited?.copy(
-            description = description,
-            exerciseID = exerciseID,
-            exerciseName = exerciseName,
-            weight = weight,
-            reps = reps,
-            date = date
+            description = newDescription,
+            exerciseID = newExerciseId,
+            exerciseName = newExerciseName,
+            weight = newWeight,
+            reps = newReps,
+            date = newDate
         ) ?: Set(
             id = "",
-            description = description,
-            exerciseID = exerciseID,
-            exerciseName = exerciseName,
-            weight = weight,
-            reps = reps,
-            date = date
+            description = newDescription,
+            exerciseID = newExerciseId,
+            exerciseName = newExerciseName,
+            weight = newWeight,
+            reps = newReps,
+            date = newDate
         )
 
         viewModelScope.launch {
-            val userId = FirebaseAuth.getInstance().currentUser?.uid ?: throw Exception("")
             if (edited == null) {
-                repository.add(userId, toSave)
+                setRepository.add(userId, toSave)
             } else {
-                repository.set(userId, toSave)
+                setRepository.set(userId, toSave)
             }
             withContext(Dispatchers.Main) {
                 navigation.value = PopBack()

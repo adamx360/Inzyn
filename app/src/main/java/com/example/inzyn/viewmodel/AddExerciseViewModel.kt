@@ -29,16 +29,19 @@ class AddExerciseViewModel : ViewModel() {
 
     fun init(id: String?) {
         buttonText.value = R.string.add
+
         if (id != null) {
             viewModelScope.launch {
                 try {
                     val userId = FirebaseAuth.getInstance().currentUser?.uid
-                    val exercise = repository.getExerciseById(userId.toString(), id)
-                    println("found")
+                    val exercise = repository.getExerciseById(userId.orEmpty(), id)
+                    println("found: $exercise")
+
                     edited = exercise
                     name.postValue(exercise?.name)
                     description.postValue(exercise?.description)
                     buttonText.postValue(R.string.save)
+
                 } catch (e: NoSuchElementException) {
                     println("not found")
                     edited = null
@@ -48,7 +51,7 @@ class AddExerciseViewModel : ViewModel() {
                 }
             }
         } else {
-            println("no id")
+            println("no id -> new exercise")
             edited = null
             name.postValue("")
             description.postValue("")
@@ -57,19 +60,20 @@ class AddExerciseViewModel : ViewModel() {
     }
 
     fun onSave() {
-        val name = name.value.orEmpty()
-        val description = description.value.orEmpty()
+        val newName = name.value.orEmpty()
+        val newDescription = description.value.orEmpty()
+
         val toSave = edited?.copy(
-            name = name,
-            description = description
+            name = newName,
+            description = newDescription
         ) ?: Exercise(
             id = "",
-            name = name,
-            description = description
+            name = newName,
+            description = newDescription
         )
 
         viewModelScope.launch {
-            val userId = FirebaseAuth.getInstance().currentUser?.uid ?: throw Exception("")
+            val userId = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
             if (edited == null) {
                 repository.add(userId, toSave)
             } else {
@@ -81,11 +85,10 @@ class AddExerciseViewModel : ViewModel() {
         }
     }
 
-
     private fun parseDate(dateString: String): Calendar {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val date = Calendar.getInstance()
-        date.time = dateFormat.parse(dateString) ?: Date()
-        return date
+        val cal = Calendar.getInstance()
+        cal.time = dateFormat.parse(dateString) ?: Date()
+        return cal
     }
 }

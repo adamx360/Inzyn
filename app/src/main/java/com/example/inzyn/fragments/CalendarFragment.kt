@@ -24,15 +24,13 @@ class CalendarFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return FragmentCalendarBinding.inflate(inflater, container, false).also {
-            binding = it
-            binding.viewModel = viewModel
-            binding.lifecycleOwner = viewLifecycleOwner
-        }.root
+        binding = FragmentCalendarBinding.inflate(inflater, container, false)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
         binding.buttonSecond.setOnClickListener {
             findNavController().navigate(R.id.action_calendarFragment_to_listFragment)
@@ -45,13 +43,16 @@ class CalendarFragment : Fragment() {
             onItemLongClick = { position ->
                 val selectedSet: Set = setListAdapter.setList[position]
                 AlertDialog.Builder(requireContext())
-                    .setTitle(String.format(getString(R.string.delete_item)))
-                    .setMessage(String.format(getString(R.string.sure_to_delete_series)) + " " + selectedSet.exerciseName + "?")
-                    .setPositiveButton(String.format(getString(R.string.Delete))) { dialog, _ ->
+                    .setTitle(getString(R.string.delete_item))
+                    .setMessage(
+                        getString(R.string.sure_to_delete_series) + " " +
+                                selectedSet.exerciseName + "?"
+                    )
+                    .setPositiveButton(getString(R.string.Delete)) { dialog, _ ->
                         viewModel.onSetRemove(selectedSet.id)
                         dialog.dismiss()
                     }
-                    .setNegativeButton(String.format(getString(R.string.Cancel))) { dialog, _ ->
+                    .setNegativeButton(getString(R.string.Cancel)) { dialog, _ ->
                         dialog.dismiss()
                     }
                     .show()
@@ -64,10 +65,9 @@ class CalendarFragment : Fragment() {
         }
 
         viewModel.sets.observe(viewLifecycleOwner) {
-            println("Loaded sets: $it") // Debugowanie danych
+            println("Loaded sets: $it")
             setListAdapter.setList = it
         }
-
         viewModel.navigation.observe(viewLifecycleOwner) {
             it.resolve(findNavController())
         }
