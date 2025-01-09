@@ -69,4 +69,5 @@
     <string name="Password">Passwort</string>
     <string name="Login">Einloggen</string>
     <string name="Email">"E-Mail "</string>
+    <string name="Register">" Registrieren"</string>
 </resources>
