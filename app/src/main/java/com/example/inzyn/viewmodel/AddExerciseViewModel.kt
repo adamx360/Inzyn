@@ -13,10 +13,6 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 
 class AddExerciseViewModel : ViewModel() {
     private val repository: ExerciseRepository = RepositoryLocator.exerciseRepository
@@ -83,12 +79,5 @@ class AddExerciseViewModel : ViewModel() {
                 navigation.value = PopBack()
             }
         }
-    }
-
-    private fun parseDate(dateString: String): Calendar {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val cal = Calendar.getInstance()
-        cal.time = dateFormat.parse(dateString) ?: Date()
-        return cal
     }
 }

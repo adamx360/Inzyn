@@ -32,7 +32,7 @@ class PlanViewModel : ViewModel() {
     private fun loadPlans() {
         viewModelScope.launch(Dispatchers.IO) {
             val planList = repository.getPlanList(userId, database)
-            println("Loaded plans: $planList") // Debug
+            println("Loaded plans: $planList")
             plans.postValue(planList)
         }
     }
